@@ -6,6 +6,7 @@ import {
   BadRequestException 
 } from '@nestjs/common';
 import { PrismaService } from '../database/prisma.service';
+import { NotificationsService } from '../notifications/notifications.service';
 
 export interface CreateProposalDto {
   bidAmount: number;
@@ -22,7 +23,10 @@ export interface UpdateProposalDto {
 
 @Injectable()
 export class ProposalsService {
-  constructor(private prisma: PrismaService) {}
+  constructor(
+    private prisma: PrismaService,
+    private notificationsService: NotificationsService,
+  ) {}
 
   async createProposal(projectId: string, freelancerId: string, dto: CreateProposalDto) {
     const project = await this.prisma.project.findUnique({ where: { id: projectId } });
@@ -34,7 +38,6 @@ export class ProposalsService {
       throw new BadRequestException(`Cannot submit proposal for project with status ${project.status}`);
     }
 
-    // Check for active existing proposals by freelancer for this project
     const existing = await this.prisma.proposal.findFirst({
       where: {
         projectId,
@@ -47,7 +50,7 @@ export class ProposalsService {
       throw new ConflictException('You have already submitted an active proposal for this project');
     }
 
-    return this.prisma.proposal.create({
+    const proposal = await this.prisma.proposal.create({
       data: {
         projectId,
         freelancerId,
@@ -68,6 +71,17 @@ export class ProposalsService {
         },
       },
     });
+
+    // Notify project client
+    await this.notificationsService.createNotification({
+      userId: project.clientId,
+      type: 'PROPOSAL_RECEIVED',
+      title: 'New proposal received',
+      message: `${proposal.freelancer.name} submitted a proposal for "${project.title}"`,
+      metadata: { projectId, proposalId: proposal.id },
+    });
+
+    return proposal;
   }
 
   async getProposalsForProject(projectId: string, userId: string, userRole: string) {
@@ -226,18 +240,22 @@ export class ProposalsService {
       throw new ForbiddenException('Only the project owner can reject proposals');
     }
 
-    return this.prisma.proposal.update({
+    const updated = await this.prisma.proposal.update({
       where: { id },
       data: { status: 'REJECTED' },
     });
+
+    await this.notificationsService.createNotification({
+      userId: proposal.freelancerId,
+      type: 'PROPOSAL_REJECTED',
+      title: 'Proposal Status Update',
+      message: `Your proposal for "${proposal.project.title}" was not selected.`,
+      metadata: { projectId: proposal.projectId, proposalId: id },
+    });
+
+    return updated;
   }
 
-  /**
-   * Atomic Proposal Acceptance Transaction:
-   * Sets target proposal status to ACCEPTED,
-   * sets project status to IN_PROGRESS,
-   * and sets all other PENDING proposals for that project to REJECTED.
-   */
   async acceptProposal(id: string, userId: string, userRole: string) {
     const proposal = await this.prisma.proposal.findUnique({
       where: { id },
@@ -256,7 +274,6 @@ export class ProposalsService {
       throw new BadRequestException(`Cannot accept proposal for project in ${proposal.project.status} state`);
     }
 
-    // Check if contract already exists for project
     const existingContract = await this.prisma.contract.findUnique({
       where: { projectId: proposal.projectId },
     });
@@ -264,7 +281,6 @@ export class ProposalsService {
       throw new ConflictException('A contract already exists for this project');
     }
 
-    // Execute atomic transaction
     const [acceptedProposal, updatedProject, updatedProposals, contract] = await this.prisma.$transaction([
       this.prisma.proposal.update({
         where: { id },
@@ -296,6 +312,15 @@ export class ProposalsService {
         },
       }),
     ]);
+
+    // Notify freelancer
+    await this.notificationsService.createNotification({
+      userId: proposal.freelancerId,
+      type: 'PROPOSAL_ACCEPTED',
+      title: 'Congratulations! Proposal Accepted',
+      message: `Your proposal for "${proposal.project.title}" has been accepted! A contract has been created.`,
+      metadata: { projectId: proposal.projectId, contractId: contract.id },
+    });
 
     return {
       proposal: acceptedProposal,

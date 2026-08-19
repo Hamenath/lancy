@@ -14,21 +14,24 @@ enum Role {
 }
 
 model User {
-  id                  String              @id @default(uuid())
-  email               String              @unique
+  id                  String                    @id @default(uuid())
+  email               String                    @unique
   name                String
-  role                String              @default("FREELANCER")
-  status              String              @default("ACTIVE")
-  emailVerified       Boolean             @default(false)
+  role                String                    @default("FREELANCER")
+  status              String                    @default("ACTIVE")
+  emailVerified       Boolean                   @default(false)
   photo               String?
-  firebaseUid         String?             @unique
-  createdAt           DateTime            @default(now())
-  updatedAt           DateTime            @updatedAt
+  firebaseUid         String?                   @unique
+  createdAt           DateTime                  @default(now())
+  updatedAt           DateTime                  @updatedAt
   profile             FreelancerProfile?
-  projects            Project[]           @relation("ClientProjects")
-  proposals           Proposal[]          @relation("FreelancerProposals")
-  clientContracts     Contract[]          @relation("ClientContracts")
-  freelancerContracts Contract[]          @relation("FreelancerContracts")
+  projects            Project[]                 @relation("ClientProjects")
+  proposals           Proposal[]                @relation("FreelancerProposals")
+  clientContracts     Contract[]                @relation("ClientContracts")
+  freelancerContracts Contract[]                @relation("FreelancerContracts")
+  participants        ConversationParticipant[]
+  messages            Message[]                 @relation("SenderMessages")
+  notifications       Notification[]
 }
 
 model FreelancerProfile {
@@ -121,4 +124,50 @@ model Milestone {
   changeReason String?
   createdAt    DateTime  @default(now())
   updatedAt    DateTime  @updatedAt
+}
+
+model Conversation {
+  id            String                    @id @default(uuid())
+  lastMessageAt DateTime                  @default(now())
+  createdAt     DateTime                  @default(now())
+  updatedAt     DateTime                  @updatedAt
+  participants  ConversationParticipant[]
+  messages      Message[]
+}
+
+model ConversationParticipant {
+  id             String       @id @default(uuid())
+  conversationId String
+  conversation   Conversation @relation(fields: [conversationId], references: [id], onDelete: Cascade)
+  userId         String
+  user           User         @relation(fields: [userId], references: [id], onDelete: Cascade)
+  joinedAt       DateTime     @default(now())
+  lastReadAt     DateTime     @default(now())
+
+  @@unique([conversationId, userId])
+}
+
+model Message {
+  id             String       @id @default(uuid())
+  conversationId String
+  conversation   Conversation @relation(fields: [conversationId], references: [id], onDelete: Cascade)
+  senderId       String
+  sender         User         @relation("SenderMessages", fields: [senderId], references: [id], onDelete: Cascade)
+  content        String
+  messageType    String       @default("TEXT")
+  createdAt      DateTime     @default(now())
+  updatedAt      DateTime     @updatedAt
+  deletedAt      DateTime?
+}
+
+model Notification {
+  id        String    @id @default(uuid())
+  userId    String
+  user      User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  type      String
+  title     String
+  message   String
+  metadata  String?
+  readAt    DateTime?
+  createdAt DateTime  @default(now())
 }
