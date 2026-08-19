@@ -2,7 +2,6 @@ import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import { AuthProvider } from "./context/AuthContext";
 import { ThemeProvider } from "./context/ThemeContext";
 import Navbar from "./components/Navbar";
-import TestUpload from "./TestUpload";
 import Hero from "./components/Hero";
 import WhyChooseLanzy from "./components/WhyChooseLanzy";
 import Categories from "./components/Categories";
@@ -19,6 +18,7 @@ import Register from "./pages/Register";
 import ForgotPassword from "./pages/ForgotPassword";
 import Dashboard from "./pages/Dashboard";
 import Designers from "./pages/Designers";
+import Freelancers from "./pages/Freelancers";
 import DesignerProfile from "./pages/DesignerProfile";
 import AddProject from "./pages/AddProject";
 import MyProjects from "./pages/MyProjects";
@@ -79,9 +79,10 @@ export default function App() {
             <Route path="/login" element={<PageTransition><Login /></PageTransition>} />
             <Route path="/register" element={<PageTransition><Register /></PageTransition>} />
             <Route path="/forgot-password" element={<ForgotPassword />} />
-            <Route path="/test-upload" element={<TestUpload />} />
             <Route path="/designers" element={<PageTransition><Designers /></PageTransition>} />
+            <Route path="/freelancers" element={<PageTransition><Freelancers /></PageTransition>} />
             <Route path="/designer/:id" element={<PageTransition><DesignerProfile /></PageTransition>} />
+            <Route path="/freelancer/:id" element={<PageTransition><DesignerProfile /></PageTransition>} />
             <Route 
               path="/dashboard" 
               element={
