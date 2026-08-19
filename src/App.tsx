@@ -25,6 +25,7 @@ import AddProject from "./pages/AddProject";
 import MyProjects from "./pages/MyProjects";
 import Chat from "./pages/Chat";
 import AdminDashboard from "./pages/AdminDashboard";
+import AnalyticsDashboard from "./pages/AnalyticsDashboard";
 import DashboardRequests from "./pages/DashboardRequests";
 import { ProtectedRoute } from "./components/ProtectedRoute";
 import PageTransition from "./components/PageTransition";
@@ -92,6 +93,16 @@ export default function App() {
                 <ProtectedRoute>
                   <PageTransition>
                     <Dashboard />
+                  </PageTransition>
+                </ProtectedRoute>
+              } 
+            />
+            <Route 
+              path="/dashboard/analytics" 
+              element={
+                <ProtectedRoute>
+                  <PageTransition>
+                    <AnalyticsDashboard />
                   </PageTransition>
                 </ProtectedRoute>
               } 

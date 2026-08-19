@@ -286,7 +286,7 @@ model ProjectReport {
   reporter    User     @relation("ProjectReporters", fields: [reporterId], references: [id], onDelete: Cascade)
   reason      String
   description String?
-  status      String   @default("OPEN") // OPEN | UNDER_REVIEW | RESOLVED | DISMISSED
+  status      String   @default("OPEN")
   createdAt   DateTime @default(now())
 
   @@unique([projectId, reporterId])
@@ -300,7 +300,7 @@ model Dispute {
   openedBy     User      @relation("OpenedDisputes", fields: [openedById], references: [id], onDelete: Cascade)
   reason       String
   description  String
-  status       String    @default("OPEN") // OPEN | UNDER_REVIEW | WAITING_FOR_RESPONSE | RESOLVED | CLOSED
+  status       String    @default("OPEN")
   resolution   String?
   resolvedById String?
   resolvedBy   User?     @relation("ResolvedDisputes", fields: [resolvedById], references: [id], onDelete: SetNull)
@@ -312,9 +312,19 @@ model AuditLog {
   id         String   @id @default(uuid())
   actorId    String
   actor      User     @relation("AuditActor", fields: [actorId], references: [id], onDelete: Cascade)
-  action     String   // USER_SUSPENDED | USER_RESTORED | PROJECT_HIDDEN | DISPUTE_RESOLVED | REPORT_RESOLVED
+  action     String
   entityType String
   entityId   String
+  metadata   String?
+  createdAt  DateTime @default(now())
+}
+
+model AnalyticsEvent {
+  id         String   @id @default(uuid())
+  eventType  String   // PROFILE_VIEWED | PROJECT_VIEWED | PROPOSAL_SUBMITTED | PROPOSAL_ACCEPTED | CONTRACT_COMPLETED | SEARCH_PERFORMED
+  actorId    String?
+  entityType String?
+  entityId   String?
   metadata   String?
   createdAt  DateTime @default(now())
 }
