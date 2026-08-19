@@ -14,19 +14,21 @@ enum Role {
 }
 
 model User {
-  id            String             @id @default(uuid())
-  email         String             @unique
-  name          String
-  role          String             @default("FREELANCER")
-  status        String             @default("ACTIVE")
-  emailVerified Boolean            @default(false)
-  photo         String?
-  firebaseUid   String?            @unique
-  createdAt     DateTime           @default(now())
-  updatedAt     DateTime           @updatedAt
-  profile       FreelancerProfile?
-  projects      Project[]          @relation("ClientProjects")
-  proposals     Proposal[]         @relation("FreelancerProposals")
+  id                  String              @id @default(uuid())
+  email               String              @unique
+  name                String
+  role                String              @default("FREELANCER")
+  status              String              @default("ACTIVE")
+  emailVerified       Boolean             @default(false)
+  photo               String?
+  firebaseUid         String?             @unique
+  createdAt           DateTime            @default(now())
+  updatedAt           DateTime            @updatedAt
+  profile             FreelancerProfile?
+  projects            Project[]           @relation("ClientProjects")
+  proposals           Proposal[]          @relation("FreelancerProposals")
+  clientContracts     Contract[]          @relation("ClientContracts")
+  freelancerContracts Contract[]          @relation("FreelancerContracts")
 }
 
 model FreelancerProfile {
@@ -61,21 +63,62 @@ model Project {
   clientId        String
   client          User       @relation("ClientProjects", fields: [clientId], references: [id], onDelete: Cascade)
   proposals       Proposal[]
+  contract        Contract?
   createdAt       DateTime   @default(now())
   updatedAt       DateTime   @updatedAt
 }
 
 model Proposal {
-  id             String   @id @default(uuid())
+  id             String    @id @default(uuid())
   projectId      String
-  project        Project  @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  project        Project   @relation(fields: [projectId], references: [id], onDelete: Cascade)
   freelancerId   String
-  freelancer     User     @relation("FreelancerProposals", fields: [freelancerId], references: [id], onDelete: Cascade)
+  freelancer     User      @relation("FreelancerProposals", fields: [freelancerId], references: [id], onDelete: Cascade)
   bidAmount      Float
   proposedBudget Float?
-  estimatedDays  Int      @default(7)
+  estimatedDays  Int       @default(7)
   coverLetter    String
-  status         String   @default("PENDING")
-  createdAt      DateTime @default(now())
-  updatedAt      DateTime @updatedAt
+  status         String    @default("PENDING")
+  contract       Contract?
+  createdAt      DateTime  @default(now())
+  updatedAt      DateTime  @updatedAt
+}
+
+model Contract {
+  id              String      @id @default(uuid())
+  projectId       String      @unique
+  project         Project     @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  proposalId      String      @unique
+  proposal        Proposal    @relation(fields: [proposalId], references: [id], onDelete: Cascade)
+  clientId        String
+  client          User        @relation("ClientContracts", fields: [clientId], references: [id], onDelete: Cascade)
+  freelancerId    String
+  freelancer      User        @relation("FreelancerContracts", fields: [freelancerId], references: [id], onDelete: Cascade)
+  title           String
+  description     String
+  agreedAmount    Float
+  currency        String      @default("USD")
+  startDate       DateTime    @default(now())
+  expectedEndDate DateTime?
+  status          String      @default("ACTIVE")
+  milestones      Milestone[]
+  createdAt       DateTime    @default(now())
+  updatedAt       DateTime    @updatedAt
+}
+
+model Milestone {
+  id           String    @id @default(uuid())
+  contractId   String
+  contract     Contract  @relation(fields: [contractId], references: [id], onDelete: Cascade)
+  title        String
+  description  String
+  amount       Float
+  dueDate      DateTime?
+  order        Int       @default(1)
+  status       String    @default("PENDING")
+  submittedAt  DateTime?
+  approvedAt   DateTime?
+  changeReason String?
+  createdAt    DateTime  @default(now())
+  updatedAt    DateTime  @updatedAt
 }

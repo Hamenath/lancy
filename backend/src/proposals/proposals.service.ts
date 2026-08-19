@@ -256,8 +256,16 @@ export class ProposalsService {
       throw new BadRequestException(`Cannot accept proposal for project in ${proposal.project.status} state`);
     }
 
+    // Check if contract already exists for project
+    const existingContract = await this.prisma.contract.findUnique({
+      where: { projectId: proposal.projectId },
+    });
+    if (existingContract) {
+      throw new ConflictException('A contract already exists for this project');
+    }
+
     // Execute atomic transaction
-    const [acceptedProposal] = await this.prisma.$transaction([
+    const [acceptedProposal, updatedProject, updatedProposals, contract] = await this.prisma.$transaction([
       this.prisma.proposal.update({
         where: { id },
         data: { status: 'ACCEPTED' },
@@ -274,8 +282,24 @@ export class ProposalsService {
         },
         data: { status: 'REJECTED' },
       }),
+      this.prisma.contract.create({
+        data: {
+          projectId: proposal.projectId,
+          proposalId: proposal.id,
+          clientId: proposal.project.clientId,
+          freelancerId: proposal.freelancerId,
+          title: proposal.project.title,
+          description: proposal.project.description,
+          agreedAmount: proposal.proposedBudget || proposal.bidAmount,
+          currency: proposal.project.currency || 'USD',
+          status: 'ACTIVE',
+        },
+      }),
     ]);
 
-    return acceptedProposal;
+    return {
+      proposal: acceptedProposal,
+      contract,
+    };
   }
 }
