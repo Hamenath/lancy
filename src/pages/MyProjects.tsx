@@ -86,7 +86,7 @@ export default function MyProjects() {
       <div>
         <Navbar />
 
-        <div className="max-w-6xl mx-auto px-6 pt-32 pb-12">
+        <div className="w-full px-4 md:px-8 pt-32 pb-12">
           {/* Header */}
           <div className="flex justify-between items-center border-b border-neutral-900 pb-6 mb-8">
             <div>

@@ -283,7 +283,7 @@ export default function DesignerProfile() {
         <Navbar />
 
         {/* Profile Header & Info Banner */}
-        <div className="max-w-6xl mx-auto px-6 pt-32 pb-12">
+        <div className="w-full px-4 md:px-8 pt-32 pb-12">
           <div className="rounded-none border border-neutral-200 dark:border-neutral-900 bg-neutral-50/50 dark:bg-neutral-950/45 p-8 md:p-12 backdrop-blur-xl shadow-2xl relative overflow-hidden">
             <div className="flex flex-col md:flex-row gap-8 items-start relative z-10">
               
@@ -392,7 +392,7 @@ export default function DesignerProfile() {
         </div>
 
         {/* Project Showcase Showcase section */}
-        <div className="max-w-6xl mx-auto px-6 py-12 border-b border-neutral-200 dark:border-neutral-950">
+        <div className="w-full px-4 md:px-8 py-12 border-b border-neutral-200 dark:border-neutral-950">
           <div className="flex flex-col sm:flex-row sm:items-center justify-between mb-8 gap-4">
             <h2 className="text-2xl font-bold tracking-tight text-neutral-900 dark:text-white">Project Portfolio</h2>
             
@@ -440,7 +440,7 @@ export default function DesignerProfile() {
         </div>
 
         {/* Reviews Section */}
-        <div className="max-w-6xl mx-auto px-6 py-12 grid grid-cols-1 md:grid-cols-3 gap-12">
+        <div className="w-full px-4 md:px-8 py-12 grid grid-cols-1 md:grid-cols-3 gap-12">
           {/* Reviews List */}
           <div className="md:col-span-2 space-y-6 text-left">
             <h2 className="text-2xl font-bold tracking-tight text-neutral-900 dark:text-white">Client Reviews</h2>

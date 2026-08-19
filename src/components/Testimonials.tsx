@@ -71,7 +71,7 @@ export default function Testimonials() {
 
   return (
     <section className="bg-white dark:bg-black py-20 md:py-28 border-t border-neutral-200 dark:border-neutral-950 overflow-hidden transition-colors duration-300">
-      <div className="max-w-4xl mx-auto px-6">
+      <div className="w-full px-4 md:px-8">
         {/* Title */}
         <div className="text-center max-w-2xl mx-auto mb-12">
           <motion.p

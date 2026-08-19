@@ -207,7 +207,7 @@ export default function Chat() {
       <div className="flex-1 flex flex-col">
         <Navbar />
 
-        <div className="flex-1 max-w-6xl w-full mx-auto px-4 pt-28 pb-8 flex flex-col md:flex-row gap-6">
+        <div className="flex-1 w-full px-4 md:px-8 pt-28 pb-8 flex flex-col md:flex-row gap-6">
           {/* Threads Listing Sidebar */}
           <div className="w-full md:w-80 border border-neutral-900 bg-neutral-950/20 p-4 flex flex-col h-[70vh] rounded-none">
             <h3 className="text-base font-extrabold tracking-tight border-b border-neutral-900 pb-3 mb-4">Messages</h3>

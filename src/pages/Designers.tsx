@@ -187,7 +187,7 @@ export default function Designers() {
         <Navbar />
 
         {/* Hero Banner Area */}
-        <div className="max-w-7xl mx-auto px-6 pt-32 pb-6">
+        <div className="w-full px-4 md:px-8 pt-32 pb-6">
           <div className="text-center md:text-left md:flex md:items-end md:justify-between mb-8 pb-6 border-b border-neutral-200 dark:border-neutral-900">
             <div>
               <h1 className="text-3xl sm:text-5xl font-extrabold tracking-tight text-neutral-900 dark:text-white mb-3">

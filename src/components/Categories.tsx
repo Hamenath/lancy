@@ -97,7 +97,7 @@ export default function Categories() {
 
   return (
     <section id="categories" className="bg-white dark:bg-black py-20 md:py-24 border-t border-neutral-200 dark:border-neutral-950 transition-colors duration-300">
-      <div className="max-w-7xl mx-auto px-6">
+      <div className="w-full px-4 md:px-8">
         {/* Title */}
         <div className="text-center max-w-2xl mx-auto mb-16">
           <motion.p

@@ -44,7 +44,7 @@ function StatItem({ target, suffix, label }: StatItemProps) {
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           transition={{ duration: 0.5 }}
-          className="text-4xl sm:text-5xl font-extrabold text-neutral-900 dark:text-white tracking-tight mb-2.5 relative z-20 group-hover:text-brand-primary dark:group-hover:text-brand-light group-hover:drop-shadow-[0_0_12px_rgba(124,58,237,0.4)] transition-all duration-300"
+          className="text-4xl sm:text-5xl font-extrabold text-neutral-900 dark:text-white tracking-tight mb-2.5 relative z-20 group-hover:text-brand-primary dark:group-hover:text-brand-light transition-all duration-300"
         >
           {count}
           {suffix}
@@ -65,7 +65,7 @@ export default function Statistics() {
 
   return (
     <section className="bg-white dark:bg-black py-20 md:py-24 border-t border-neutral-200 dark:border-neutral-950 transition-colors duration-300">
-      <div className="max-w-7xl mx-auto px-6">
+      <div className="w-full px-4 md:px-8">
         <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
           {stats.map((stat) => (
             <StatItem

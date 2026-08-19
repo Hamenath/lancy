@@ -65,7 +65,7 @@ export default function WhyChooseLanzy() {
 
   return (
     <section id="designers" className="bg-black py-20 md:py-28 border-t border-neutral-900">
-      <div className="max-w-7xl mx-auto px-6">
+      <div className="w-full px-4 md:px-8">
         {/* Header */}
         <div className="text-center max-w-2xl mx-auto mb-16 md:mb-20">
           <motion.p

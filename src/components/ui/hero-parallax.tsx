@@ -100,7 +100,7 @@ export const HeroParallax = ({
 
 export const Header = () => {
   return (
-    <div className="max-w-7xl relative z-20 mx-auto flex flex-col items-center justify-center py-12 md:py-20 px-6 w-full left-0 top-0 text-center">
+    <div className="w-full relative z-20 flex flex-col items-center justify-center py-12 md:py-20 px-4 md:px-8 left-0 top-0 text-center">
       {/* Launching Soon Badge */}
       <div className="inline-flex items-center space-x-2 bg-neutral-150 border border-neutral-200 dark:bg-neutral-900 dark:border-neutral-800 px-3.5 py-1.5 rounded-none text-xs font-semibold text-neutral-800 dark:text-slate-200 mb-6 w-fit">
         <span className="flex h-2 w-2 relative">

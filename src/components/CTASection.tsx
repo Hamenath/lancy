@@ -5,7 +5,7 @@ import { ShinyButton } from '@/components/ui/shiny-button';
 export default function CTASection() {
   return (
     <section id="cta" className="bg-white dark:bg-black py-20 md:py-28 border-t border-neutral-200 dark:border-neutral-950 relative overflow-hidden transition-colors duration-300">
-      <div className="max-w-5xl mx-auto px-6 text-center relative z-10">
+      <div className="w-full px-4 md:px-8 text-center relative z-10">
         
         {/* Decorative Badge */}
         <motion.div

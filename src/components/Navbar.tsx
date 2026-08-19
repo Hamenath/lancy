@@ -81,7 +81,7 @@ export default function Navbar() {
           : 'border-transparent bg-transparent'
       )}
     >
-      <nav className="flex h-16 w-full items-center justify-between px-6 max-w-7xl mx-auto">
+      <nav className="flex h-16 w-full items-center justify-between px-4 md:px-8">
         {/* Left: Logo & Links */}
         <div className="flex items-center gap-8">
           <Link to="/" className="flex items-center space-x-2 text-xl font-bold tracking-tight text-neutral-900 dark:text-white">

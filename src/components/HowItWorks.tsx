@@ -69,7 +69,7 @@ export default function HowItWorks() {
 
   return (
     <section id="how-it-works" className="bg-black py-20 md:py-28 border-t border-neutral-900 relative overflow-hidden">
-      <div className="max-w-7xl mx-auto px-6 relative z-10">
+      <div className="w-full px-4 md:px-8 relative z-10">
         {/* Title */}
         <div className="text-center max-w-2xl mx-auto mb-16 md:mb-24">
           <motion.p

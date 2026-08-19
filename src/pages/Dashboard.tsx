@@ -416,7 +416,7 @@ export default function Dashboard() {
     <div className="min-h-screen bg-white dark:bg-black text-neutral-900 dark:text-white antialiased transition-colors duration-300">
       <Navbar />
       
-      <div className="max-w-7xl mx-auto px-6 pt-28 pb-16">
+      <div className="w-full px-4 md:px-8 pt-28 pb-16">
         
         {/* Alerts */}
         <div className="mb-6 max-w-5xl mx-auto">

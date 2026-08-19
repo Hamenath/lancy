@@ -75,7 +75,7 @@ export default function Footer() {
 
   return (
     <footer id="contact" className="bg-neutral-50 dark:bg-black border-t border-neutral-200 dark:border-neutral-950 pt-16 pb-12 transition-colors duration-300">
-      <div className="max-w-7xl mx-auto px-6">
+      <div className="w-full px-4 md:px-8">
         
         {/* Top Grid */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-12 gap-8 pb-12 border-b border-neutral-200 dark:border-neutral-900">
