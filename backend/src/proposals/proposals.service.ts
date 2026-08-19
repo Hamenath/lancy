@@ -1,36 +1,281 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { 
+  Injectable, 
+  NotFoundException, 
+  ForbiddenException, 
+  ConflictException, 
+  BadRequestException 
+} from '@nestjs/common';
 import { PrismaService } from '../database/prisma.service';
 
 export interface CreateProposalDto {
-  freelancerId: string;
   bidAmount: number;
+  proposedBudget?: number;
+  estimatedDays?: number;
   coverLetter: string;
+}
+
+export interface UpdateProposalDto {
+  bidAmount?: number;
+  estimatedDays?: number;
+  coverLetter?: string;
 }
 
 @Injectable()
 export class ProposalsService {
   constructor(private prisma: PrismaService) {}
 
-  async createProposal(projectId: string, dto: CreateProposalDto) {
+  async createProposal(projectId: string, freelancerId: string, dto: CreateProposalDto) {
     const project = await this.prisma.project.findUnique({ where: { id: projectId } });
-    if (!project) throw new NotFoundException('Project not found');
+    if (!project) {
+      throw new NotFoundException(`Project with ID ${projectId} not found`);
+    }
+
+    if (project.status !== 'OPEN') {
+      throw new BadRequestException(`Cannot submit proposal for project with status ${project.status}`);
+    }
+
+    // Check for active existing proposals by freelancer for this project
+    const existing = await this.prisma.proposal.findFirst({
+      where: {
+        projectId,
+        freelancerId,
+        status: { in: ['PENDING', 'SHORTLISTED', 'ACCEPTED'] },
+      },
+    });
+
+    if (existing) {
+      throw new ConflictException('You have already submitted an active proposal for this project');
+    }
 
     return this.prisma.proposal.create({
       data: {
         projectId,
-        freelancerId: dto.freelancerId,
+        freelancerId,
         bidAmount: dto.bidAmount,
+        proposedBudget: dto.proposedBudget || dto.bidAmount,
+        estimatedDays: dto.estimatedDays || 7,
         coverLetter: dto.coverLetter,
         status: 'PENDING',
+      },
+      include: {
+        freelancer: {
+          select: {
+            id: true,
+            name: true,
+            photo: true,
+            profile: true,
+          },
+        },
       },
     });
   }
 
-  async getProposalsForProject(projectId: string) {
+  async getProposalsForProject(projectId: string, userId: string, userRole: string) {
+    const project = await this.prisma.project.findUnique({ where: { id: projectId } });
+    if (!project) {
+      throw new NotFoundException(`Project with ID ${projectId} not found`);
+    }
+
+    if (project.clientId !== userId && userRole !== 'ADMIN') {
+      throw new ForbiddenException('Only the project owner can view project proposals');
+    }
+
     return this.prisma.proposal.findMany({
       where: { projectId },
-      include: { freelancer: true },
+      include: {
+        freelancer: {
+          select: {
+            id: true,
+            name: true,
+            photo: true,
+            profile: true,
+          },
+        },
+      },
       orderBy: { createdAt: 'desc' },
     });
+  }
+
+  async getProposalsForFreelancer(freelancerId: string) {
+    return this.prisma.proposal.findMany({
+      where: { freelancerId },
+      include: {
+        project: {
+          include: {
+            client: {
+              select: {
+                id: true,
+                name: true,
+                photo: true,
+              },
+            },
+          },
+        },
+      },
+      orderBy: { createdAt: 'desc' },
+    });
+  }
+
+  async findOne(id: string, userId: string, userRole: string) {
+    const proposal = await this.prisma.proposal.findUnique({
+      where: { id },
+      include: {
+        project: true,
+        freelancer: {
+          select: {
+            id: true,
+            name: true,
+            photo: true,
+            profile: true,
+          },
+        },
+      },
+    });
+
+    if (!proposal) {
+      throw new NotFoundException(`Proposal with ID ${id} not found`);
+    }
+
+    const isFreelancerOwner = proposal.freelancerId === userId;
+    const isProjectOwner = proposal.project.clientId === userId;
+    const isAdmin = userRole === 'ADMIN';
+
+    if (!isFreelancerOwner && !isProjectOwner && !isAdmin) {
+      throw new ForbiddenException('You are not authorized to view this proposal');
+    }
+
+    return proposal;
+  }
+
+  async updateProposal(id: string, userId: string, userRole: string, dto: UpdateProposalDto) {
+    const proposal = await this.prisma.proposal.findUnique({
+      where: { id },
+    });
+
+    if (!proposal) {
+      throw new NotFoundException(`Proposal with ID ${id} not found`);
+    }
+
+    if (proposal.freelancerId !== userId && userRole !== 'ADMIN') {
+      throw new ForbiddenException('You are not authorized to update this proposal');
+    }
+
+    if (proposal.status !== 'PENDING') {
+      throw new BadRequestException(`Cannot update proposal with status ${proposal.status}`);
+    }
+
+    return this.prisma.proposal.update({
+      where: { id },
+      data: {
+        bidAmount: dto.bidAmount ?? proposal.bidAmount,
+        estimatedDays: dto.estimatedDays ?? proposal.estimatedDays,
+        coverLetter: dto.coverLetter ?? proposal.coverLetter,
+      },
+    });
+  }
+
+  async withdrawProposal(id: string, userId: string, userRole: string) {
+    const proposal = await this.prisma.proposal.findUnique({ where: { id } });
+    if (!proposal) {
+      throw new NotFoundException(`Proposal with ID ${id} not found`);
+    }
+
+    if (proposal.freelancerId !== userId && userRole !== 'ADMIN') {
+      throw new ForbiddenException('You are not authorized to withdraw this proposal');
+    }
+
+    if (!['PENDING', 'SHORTLISTED'].includes(proposal.status)) {
+      throw new BadRequestException(`Cannot withdraw proposal with status ${proposal.status}`);
+    }
+
+    return this.prisma.proposal.update({
+      where: { id },
+      data: { status: 'WITHDRAWN' },
+    });
+  }
+
+  async shortlistProposal(id: string, userId: string, userRole: string) {
+    const proposal = await this.prisma.proposal.findUnique({
+      where: { id },
+      include: { project: true },
+    });
+    if (!proposal) {
+      throw new NotFoundException(`Proposal with ID ${id} not found`);
+    }
+
+    if (proposal.project.clientId !== userId && userRole !== 'ADMIN') {
+      throw new ForbiddenException('Only the project owner can shortlist proposals');
+    }
+
+    return this.prisma.proposal.update({
+      where: { id },
+      data: { status: 'SHORTLISTED' },
+    });
+  }
+
+  async rejectProposal(id: string, userId: string, userRole: string) {
+    const proposal = await this.prisma.proposal.findUnique({
+      where: { id },
+      include: { project: true },
+    });
+    if (!proposal) {
+      throw new NotFoundException(`Proposal with ID ${id} not found`);
+    }
+
+    if (proposal.project.clientId !== userId && userRole !== 'ADMIN') {
+      throw new ForbiddenException('Only the project owner can reject proposals');
+    }
+
+    return this.prisma.proposal.update({
+      where: { id },
+      data: { status: 'REJECTED' },
+    });
+  }
+
+  /**
+   * Atomic Proposal Acceptance Transaction:
+   * Sets target proposal status to ACCEPTED,
+   * sets project status to IN_PROGRESS,
+   * and sets all other PENDING proposals for that project to REJECTED.
+   */
+  async acceptProposal(id: string, userId: string, userRole: string) {
+    const proposal = await this.prisma.proposal.findUnique({
+      where: { id },
+      include: { project: true },
+    });
+
+    if (!proposal) {
+      throw new NotFoundException(`Proposal with ID ${id} not found`);
+    }
+
+    if (proposal.project.clientId !== userId && userRole !== 'ADMIN') {
+      throw new ForbiddenException('Only the project owner can accept proposals');
+    }
+
+    if (proposal.project.status !== 'OPEN') {
+      throw new BadRequestException(`Cannot accept proposal for project in ${proposal.project.status} state`);
+    }
+
+    // Execute atomic transaction
+    const [acceptedProposal] = await this.prisma.$transaction([
+      this.prisma.proposal.update({
+        where: { id },
+        data: { status: 'ACCEPTED' },
+      }),
+      this.prisma.project.update({
+        where: { id: proposal.projectId },
+        data: { status: 'IN_PROGRESS' },
+      }),
+      this.prisma.proposal.updateMany({
+        where: {
+          projectId: proposal.projectId,
+          id: { not: id },
+          status: { in: ['PENDING', 'SHORTLISTED'] },
+        },
+        data: { status: 'REJECTED' },
+      }),
+    ]);
+
+    return acceptedProposal;
   }
 }
