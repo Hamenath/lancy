@@ -57,7 +57,7 @@ export default function FeaturedDesigners() {
             id: userId,
             name: userData.name || "Creative Designer",
             role: userData.specialty || "Product & UI Designer",
-            avatar: userData.photo || `https://api.dicebear.com/7.x/initials/svg?seed=${encodeURIComponent(userData.name || "U")}&radius=0&backgroundColor=000000&textColor=ffffff`,
+            avatar: userData.photo || `https://api.dicebear.com/7.x/initials/svg?seed=${encodeURIComponent(userData.name || "U")}&radius=0&backgroundColor=7c3aed&textColor=ffffff`,
             rating: avgRating,
             reviews: revSnap.size,
             skills: userData.skills || ["Figma", "Design Systems"],
@@ -80,7 +80,7 @@ export default function FeaturedDesigners() {
   }, []);
 
   return (
-    <section id="clients" className="bg-white dark:bg-black py-20 md:py-28 border-t border-neutral-200 dark:border-neutral-950 transition-colors duration-300">
+    <section id="clients" className="bg-white py-20 md:py-28 border-t border-neutral-200 transition-colors duration-300">
       <div className="w-full px-4 md:px-8">
         {/* Header */}
         <div className="flex flex-col md:flex-row md:items-end justify-between mb-16">
@@ -90,7 +90,7 @@ export default function FeaturedDesigners() {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ duration: 0.5 }}
-              className="text-xs font-bold uppercase tracking-widest text-neutral-500 dark:text-slate-400 mb-3.5"
+              className="text-xs font-bold uppercase tracking-widest text-brand-primary mb-3.5"
             >
               Featured Talent
             </motion.p>
@@ -99,14 +99,14 @@ export default function FeaturedDesigners() {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ duration: 0.5, delay: 0.05 }}
-              className="text-3xl sm:text-4xl font-extrabold text-neutral-900 dark:text-white tracking-tight"
+              className="text-3xl sm:text-4xl font-extrabold text-neutral-900 tracking-tight"
             >
               Connect With Premium Designers
             </motion.h2>
           </div>
           
           <Link
-            className="group flex items-center space-x-1.5 text-sm font-semibold text-neutral-800 dark:text-white hover:text-brand-primary dark:hover:text-brand-light transition-colors duration-200 mt-4 md:mt-0"
+            className="group flex items-center space-x-1.5 text-sm font-semibold text-brand-primary hover:underline transition-colors duration-200 mt-4 md:mt-0"
             to="/designers"
           >
             <span>View all designers</span>
@@ -118,10 +118,10 @@ export default function FeaturedDesigners() {
         <div className="flex flex-col space-y-8">
           {loading ? (
             <div className="flex justify-center items-center py-12">
-              <div className="h-8 w-8 animate-spin rounded-full border-4 border-neutral-200 dark:border-neutral-800 border-t-brand-primary"></div>
+              <div className="h-8 w-8 animate-spin rounded-full border-4 border-neutral-200 border-t-brand-primary"></div>
             </div>
           ) : designersList.length === 0 ? (
-            <p className="text-neutral-550 dark:text-neutral-500 text-xs text-center py-12">No verified designers found yet.</p>
+            <p className="text-neutral-500 text-xs text-center py-12">No verified designers found yet.</p>
           ) : (
             designersList.map((designer, idx) => (
             <motion.div
@@ -135,36 +135,36 @@ export default function FeaturedDesigners() {
               <GlowCard 
                 customSize={true} 
                 glowColor="purple" 
-                className="w-full p-0 grid grid-cols-1 lg:grid-cols-12 rounded-none bg-neutral-50/50 dark:bg-neutral-950/40 backdrop-blur-xl border border-neutral-200 dark:border-neutral-900 hover:border-brand-primary/50 dark:hover:border-brand-primary/50 transition-all duration-300 overflow-hidden"
+                className="w-full p-0 grid grid-cols-1 lg:grid-cols-12 rounded-none bg-neutral-50 border border-neutral-200 hover:border-brand-primary/50 transition-all duration-300 overflow-hidden shadow-sm"
               >
                 {/* Designer Details (Left column) */}
-                <div className="p-8 lg:col-span-5 flex flex-col justify-between border-b lg:border-b-0 lg:border-r border-neutral-200 dark:border-neutral-900 relative z-20">
+                <div className="p-8 lg:col-span-5 flex flex-col justify-between border-b lg:border-b-0 lg:border-r border-neutral-200 relative z-20">
                   <div>
                     <div className="flex items-center space-x-4 mb-5">
                       <div className="relative">
                         <img
                           src={designer.avatar}
                           alt={designer.name}
-                          className="w-16 h-16 rounded-none object-cover border border-neutral-200 dark:border-neutral-800"
+                          className="w-16 h-16 rounded-none object-cover border border-neutral-200"
                         />
                         {designer.isVerified && (
-                          <div className="absolute -bottom-1 -right-1 bg-white dark:bg-neutral-950 p-0.5 rounded-none border border-neutral-250 dark:border-neutral-900">
-                            <CheckCircle2 size={16} className="text-brand-primary fill-transparent dark:text-white" />
+                          <div className="absolute -bottom-1 -right-1 bg-white p-0.5 rounded-none border border-neutral-200">
+                            <CheckCircle2 size={16} className="text-brand-primary" />
                           </div>
                         )}
                       </div>
                       <div>
-                        <h3 className="text-lg font-bold text-neutral-900 dark:text-white flex items-center space-x-1">
+                        <h3 className="text-lg font-bold text-neutral-900 flex items-center space-x-1">
                           <span>{designer.name}</span>
                         </h3>
-                        <p className="text-sm text-neutral-500 dark:text-slate-400 font-medium">{designer.role}</p>
+                        <p className="text-sm text-neutral-500 font-medium">{designer.role}</p>
                       </div>
                     </div>
 
-                    <div className="inline-flex items-center space-x-1.5 mb-6 bg-neutral-100 dark:bg-neutral-900 px-3 py-1.5 rounded-none border border-neutral-200 dark:border-neutral-800">
+                    <div className="inline-flex items-center space-x-1.5 mb-6 bg-white px-3 py-1.5 rounded-none border border-neutral-200">
                       <Star size={14} className="fill-brand-primary text-brand-primary" />
-                      <span className="text-xs font-bold text-neutral-900 dark:text-white">{designer.rating.toFixed(2)}</span>
-                      <span className="text-xs text-neutral-500 dark:text-slate-400">({designer.reviews} projects)</span>
+                      <span className="text-xs font-bold text-neutral-900">{designer.rating.toFixed(2)}</span>
+                      <span className="text-xs text-neutral-500">({designer.reviews} projects)</span>
                     </div>
 
                     {/* Skills tags */}
@@ -172,7 +172,7 @@ export default function FeaturedDesigners() {
                       {designer.skills.map((skill) => (
                         <span
                           key={skill}
-                          className="text-xs font-semibold text-neutral-600 dark:text-slate-300 bg-neutral-100 dark:bg-neutral-900 border border-neutral-200 dark:border-neutral-800 px-3 py-1 rounded-none"
+                          className="text-xs font-semibold text-neutral-700 bg-white border border-neutral-200 px-3 py-1 rounded-none"
                         >
                           {skill}
                         </span>
@@ -180,11 +180,11 @@ export default function FeaturedDesigners() {
                     </div>
                   </div>
 
-                  <div className="flex items-center justify-between pt-4 border-t border-neutral-200 dark:border-neutral-900">
-                    <span className="text-xs font-medium text-neutral-500 dark:text-slate-400">Available immediately</span>
+                  <div className="flex items-center justify-between pt-4 border-t border-neutral-200">
+                    <span className="text-xs font-medium text-neutral-500">Available immediately</span>
                     <Link
                       to={`/designer/${designer.id}`}
-                      className="text-xs font-bold text-brand-primary dark:text-white hover:underline transition-all duration-200"
+                      className="text-xs font-bold text-brand-primary hover:underline transition-all duration-200"
                     >
                       View Full Profile
                     </Link>
@@ -192,7 +192,7 @@ export default function FeaturedDesigners() {
                 </div>
 
                 {/* Portfolio Preview (Right column) */}
-                <div className="lg:col-span-7 bg-neutral-200 dark:bg-neutral-900 overflow-hidden group/portfolio flex flex-col justify-end p-8 min-h-55 lg:min-h-0 relative z-20">
+                <div className="lg:col-span-7 bg-neutral-100 overflow-hidden group/portfolio flex flex-col justify-end p-8 min-h-55 lg:min-h-0 relative z-20">
                   <img
                     src={designer.portfolioUrl}
                     alt={designer.portfolioTitle}
@@ -202,7 +202,7 @@ export default function FeaturedDesigners() {
                   <div className="absolute inset-0 bg-linear-to-t from-black/80 via-black/20 to-transparent"></div>
                   
                   <div className="relative z-10 text-white">
-                    <p className="text-[10px] font-bold uppercase tracking-wider text-slate-350 mb-1">Portfolio Spotlight</p>
+                    <p className="text-[10px] font-bold uppercase tracking-wider text-slate-300 mb-1">Portfolio Spotlight</p>
                     <h4 className="text-lg font-bold text-white tracking-tight">{designer.portfolioTitle}</h4>
                   </div>
                 </div>

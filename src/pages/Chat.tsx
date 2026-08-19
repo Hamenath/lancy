@@ -109,7 +109,7 @@ export default function Chat() {
 
   if (!user) {
     return (
-      <div className="flex min-h-screen items-center justify-center bg-black text-white flex-col space-y-4">
+      <div className="flex min-h-screen items-center justify-center bg-white text-neutral-900 flex-col space-y-4">
         <p>Please log in to view your messages.</p>
         <Link to="/login" className="text-sm text-blue-400 hover:underline">
           Log In
@@ -119,7 +119,7 @@ export default function Chat() {
   }
 
   return (
-    <div className="relative min-h-screen bg-black text-white antialiased flex flex-col justify-between">
+    <div className="relative min-h-screen bg-white text-neutral-900 antialiased flex flex-col justify-between">
       <div className="flex-1 flex flex-col">
         <Navbar />
 

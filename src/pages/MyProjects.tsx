@@ -72,7 +72,7 @@ export default function MyProjects() {
 
   if (!user) {
     return (
-      <div className="flex min-h-screen items-center justify-center bg-black text-white flex-col space-y-4">
+      <div className="flex min-h-screen items-center justify-center bg-white text-neutral-900 flex-col space-y-4">
         <p>Please log in to manage your portfolio.</p>
         <Link to="/login" className="text-sm text-blue-400 hover:underline">
           Log In
@@ -82,7 +82,7 @@ export default function MyProjects() {
   }
 
   return (
-    <div className="relative min-h-screen bg-black text-white antialiased flex flex-col justify-between">
+    <div className="relative min-h-screen bg-white text-neutral-900 antialiased flex flex-col justify-between">
       <div>
         <Navbar />
 

@@ -31,19 +31,19 @@ function CategoryCard({ icon, name, count, index }: CategoryCardProps) {
       <GlowCard 
         customSize={true} 
         glowColor="purple" 
-        className="w-full p-6 bg-neutral-50/50 dark:bg-neutral-950/40 backdrop-blur-xl border border-neutral-200 dark:border-neutral-900 hover:border-brand-primary/50 dark:hover:border-brand-primary/50 rounded-none transition-all duration-300 flex items-center justify-between"
+        className="w-full p-6 bg-white border border-neutral-200 hover:border-brand-primary/50 rounded-none transition-all duration-300 flex items-center justify-between shadow-sm"
       >
         <div className="flex items-center space-x-4 relative z-20">
-          <div className="bg-neutral-100 dark:bg-neutral-900 text-neutral-600 dark:text-slate-300 p-3 rounded-none border border-neutral-200 dark:border-neutral-800">
+          <div className="bg-brand-primary/10 text-brand-primary p-3 rounded-none border border-brand-primary/20">
             {icon}
           </div>
           <div>
-            <h3 className="font-bold text-[15px] text-neutral-900 dark:text-white transition-colors duration-200">{name}</h3>
-            <p className="text-xs text-neutral-500 dark:text-slate-400 font-medium mt-0.5">{count} designers</p>
+            <h3 className="font-bold text-[15px] text-neutral-900 transition-colors duration-200">{name}</h3>
+            <p className="text-xs text-neutral-500 font-medium mt-0.5">{count} designers</p>
           </div>
         </div>
         
-        <div className="text-neutral-400 group-hover:text-brand-primary dark:group-hover:text-white group-hover:translate-x-1 transition-all duration-200 relative z-20">
+        <div className="text-neutral-400 group-hover:text-brand-primary group-hover:translate-x-1 transition-all duration-200 relative z-20">
           <ArrowRight size={16} />
         </div>
       </GlowCard>
@@ -96,7 +96,7 @@ export default function Categories() {
   ];
 
   return (
-    <section id="categories" className="bg-white dark:bg-black py-20 md:py-24 border-t border-neutral-200 dark:border-neutral-950 transition-colors duration-300">
+    <section id="categories" className="bg-neutral-50 py-20 md:py-24 border-t border-neutral-200 transition-colors duration-300">
       <div className="w-full px-4 md:px-8">
         {/* Title */}
         <div className="text-center max-w-2xl mx-auto mb-16">
@@ -105,7 +105,7 @@ export default function Categories() {
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ duration: 0.5 }}
-            className="text-xs font-bold uppercase tracking-widest text-neutral-500 dark:text-slate-400 mb-3"
+            className="text-xs font-bold uppercase tracking-widest text-brand-primary mb-3"
           >
             Specialized Talents
           </motion.p>
@@ -114,7 +114,7 @@ export default function Categories() {
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ duration: 0.5, delay: 0.05 }}
-            className="text-3xl sm:text-4xl font-extrabold text-neutral-900 dark:text-white tracking-tight"
+            className="text-3xl sm:text-4xl font-extrabold text-neutral-900 tracking-tight"
           >
             Find Designers In Every Creative Category
           </motion.h2>

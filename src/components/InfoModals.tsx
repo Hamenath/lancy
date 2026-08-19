@@ -217,14 +217,14 @@ export default function InfoModals() {
   const modal = contentMap[activeHash] || { title: "Information", body: <p>No page found.</p> };
 
   return (
-    <div className="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 flex items-center justify-center p-6">
-      <div className="bg-black border border-neutral-800 w-full max-w-xl text-white rounded-none shadow-premium flex flex-col relative overflow-hidden">
+    <div className="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-center justify-center p-6">
+      <div className="bg-white border border-neutral-200 w-full max-w-xl text-neutral-900 rounded-none shadow-xl flex flex-col relative overflow-hidden">
         {/* Header */}
-        <div className="flex items-center justify-between p-6 border-b border-neutral-900 bg-neutral-950">
+        <div className="flex items-center justify-between p-6 border-b border-neutral-200 bg-neutral-50">
           <h3 className="text-lg font-bold tracking-tight">{modal.title}</h3>
           <button 
             onClick={closeModal} 
-            className="text-slate-400 hover:text-white p-1 hover:bg-neutral-800 transition-colors"
+            className="text-neutral-500 hover:text-neutral-900 p-1 hover:bg-neutral-200 transition-colors"
             aria-label="Close modal"
           >
             <X size={18} />
@@ -237,10 +237,10 @@ export default function InfoModals() {
         </div>
         
         {/* Footer */}
-        <div className="p-6 border-t border-neutral-900 bg-neutral-950 flex justify-end">
+        <div className="p-6 border-t border-neutral-200 bg-neutral-50 flex justify-end">
           <button 
             onClick={closeModal} 
-            className="bg-white hover:bg-neutral-200 text-black text-xs font-bold px-5 py-2.5 rounded-none transition-colors"
+            className="px-4 py-2 bg-neutral-900 text-white font-bold text-xs hover:bg-neutral-800 transition-colors rounded-none"
           >
             Close
           </button>

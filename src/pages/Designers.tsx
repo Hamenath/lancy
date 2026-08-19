@@ -182,7 +182,7 @@ export default function Designers() {
   });
 
   return (
-    <div className="relative min-h-screen bg-white dark:bg-black text-neutral-900 dark:text-white antialiased flex flex-col justify-between transition-colors duration-300">
+    <div className="relative min-h-screen bg-white text-neutral-900 antialiased flex flex-col justify-between">
       <div>
         <Navbar />
 

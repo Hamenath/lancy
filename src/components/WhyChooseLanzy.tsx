@@ -18,12 +18,12 @@ function FeatureCard({ icon, title, description, index }: FeatureCardProps) {
       transition={{ duration: 0.5, delay: index * 0.08, ease: [0.16, 1, 0.3, 1] as [number, number, number, number] }}
       className="w-full flex"
     >
-      <GlowCard customSize={true} glowColor="blue" className="w-full p-8 flex flex-col items-start text-left bg-white/2 backdrop-blur-xl relative z-10 group border border-white/8 hover:border-white/45 transition-all duration-300">
-        <div className="w-11 h-11 bg-neutral-900 text-white border border-neutral-800 flex items-center justify-center mb-6 z-20">
+      <GlowCard customSize={true} glowColor="purple" className="w-full p-8 flex flex-col items-start text-left bg-neutral-50 relative z-10 group border border-neutral-200 hover:border-brand-primary/40 transition-all duration-300 shadow-sm">
+        <div className="w-11 h-11 bg-brand-primary/10 text-brand-primary border border-brand-primary/20 flex items-center justify-center mb-6 z-20">
           {icon}
         </div>
-        <h3 className="text-lg font-bold text-white mb-2.5 relative z-20 group-hover:text-transparent group-hover:bg-linear-to-r group-hover:from-white group-hover:to-slate-300 group-hover:bg-clip-text transition-all duration-300">{title}</h3>
-        <p className="text-sm text-slate-400 leading-relaxed relative z-20 group-hover:text-slate-300 transition-all duration-300">{description}</p>
+        <h3 className="text-lg font-bold text-neutral-900 mb-2.5 relative z-20 transition-all duration-300">{title}</h3>
+        <p className="text-sm text-neutral-600 leading-relaxed relative z-20 transition-all duration-300">{description}</p>
       </GlowCard>
     </motion.div>
   );
@@ -64,7 +64,7 @@ export default function WhyChooseLanzy() {
   ];
 
   return (
-    <section id="designers" className="bg-black py-20 md:py-28 border-t border-neutral-900">
+    <section id="designers" className="bg-white py-20 md:py-28 border-t border-neutral-200">
       <div className="w-full px-4 md:px-8">
         {/* Header */}
         <div className="text-center max-w-2xl mx-auto mb-16 md:mb-20">
@@ -73,7 +73,7 @@ export default function WhyChooseLanzy() {
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ duration: 0.5 }}
-            className="text-xs font-bold uppercase tracking-widest text-slate-400 mb-3.5"
+            className="text-xs font-bold uppercase tracking-widest text-brand-primary mb-3.5"
           >
             The Lanzy Advantage
           </motion.p>
@@ -82,7 +82,7 @@ export default function WhyChooseLanzy() {
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ duration: 0.5, delay: 0.05 }}
-            className="text-3xl sm:text-4xl font-extrabold text-white tracking-tight leading-tight"
+            className="text-3xl sm:text-4xl font-extrabold text-neutral-900 tracking-tight leading-tight"
           >
             Built For Creativity. <br className="hidden sm:inline" /> Designed For Simplicity.
           </motion.h2>

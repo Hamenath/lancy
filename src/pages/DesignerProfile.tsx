@@ -251,10 +251,10 @@ export default function DesignerProfile() {
 
   if (loading) {
     return (
-      <div className="flex min-h-screen items-center justify-center bg-white dark:bg-black text-neutral-900 dark:text-white transition-colors duration-300">
+      <div className="flex min-h-screen items-center justify-center bg-white text-neutral-900">
         <div className="flex flex-col items-center space-y-4">
-          <div className="h-8 w-8 animate-spin rounded-full border-4 border-neutral-200 dark:border-neutral-800 border-t-brand-primary"></div>
-          <p className="text-sm text-neutral-500 dark:text-neutral-400">Loading profile details...</p>
+          <div className="h-8 w-8 animate-spin rounded-full border-4 border-neutral-200 border-t-brand-primary"></div>
+          <p className="text-sm text-neutral-500">Loading profile details...</p>
         </div>
       </div>
     );
@@ -262,7 +262,7 @@ export default function DesignerProfile() {
 
   if (error || !profile) {
     return (
-      <div className="flex min-h-screen items-center justify-center bg-white dark:bg-black text-neutral-900 dark:text-white flex-col space-y-4 transition-colors duration-300">
+      <div className="flex min-h-screen items-center justify-center bg-white text-neutral-900 flex-col space-y-4">
         <p className="text-red-500">{error || "Profile not found."}</p>
         <Link to="/designers" className="text-sm text-brand-primary hover:underline">
           Back to directory
@@ -278,7 +278,7 @@ export default function DesignerProfile() {
   const filteredProjects = projects.filter(p => !selectedProjCategory || p.category === selectedProjCategory);
 
   return (
-    <div className="relative min-h-screen bg-white dark:bg-black text-neutral-900 dark:text-white antialiased flex flex-col justify-between transition-colors duration-300">
+    <div className="relative min-h-screen bg-white text-neutral-900 antialiased flex flex-col justify-between">
       <div>
         <Navbar />
 

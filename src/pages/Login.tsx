@@ -43,28 +43,27 @@ export default function Login() {
   };
 
   return (
-    <div className="relative flex min-h-screen items-center justify-center bg-black px-4 py-12 text-white">
+    <div className="relative flex min-h-screen items-center justify-center bg-neutral-50 px-4 py-12 text-neutral-900">
       <button 
         onClick={() => navigate(-1)} 
-        className="absolute top-8 left-8 flex items-center gap-2 rounded-full border border-neutral-800 bg-neutral-950/45 px-4 py-2 text-xs font-semibold text-neutral-400 hover:text-white hover:border-neutral-700 backdrop-blur-xl transition-all duration-200"
+        className="absolute top-8 left-8 flex items-center gap-2 rounded-full border border-neutral-200 bg-white px-4 py-2 text-xs font-semibold text-neutral-700 hover:text-neutral-900 hover:border-neutral-300 shadow-sm transition-all duration-200"
       >
         <ArrowLeft className="h-4 w-4" />
         Back
       </button>
-      <div className="w-full max-w-md space-y-8 rounded-2xl border border-neutral-900 bg-neutral-950/50 p-8 backdrop-blur-xl shadow-2xl">
+      <div className="w-full max-w-md space-y-8 rounded-2xl border border-neutral-200 bg-white p-8 shadow-xl">
         <div className="text-center">
-          <Link to="/" className="inline-flex items-center space-x-2 text-2xl font-bold tracking-tight text-white mb-6">
-            <img src="/lancylogo.png" alt="Lanzy Logo" className="h-6 w-auto" />
-            <span className="font-extrabold text-lg tracking-tight">Lanzy</span>
+          <Link to="/" className="inline-flex items-center space-x-2 text-2xl font-bold tracking-tight text-neutral-900 mb-6">
+            <span className="font-extrabold text-2xl tracking-tight text-transparent bg-clip-text bg-linear-to-r from-brand-primary to-brand-light">Lanzy</span>
           </Link>
-          <h2 className="text-3xl font-extrabold tracking-tight text-white">Welcome back</h2>
-          <p className="mt-2 text-sm text-neutral-400">
+          <h2 className="text-3xl font-extrabold tracking-tight text-neutral-900">Welcome back</h2>
+          <p className="mt-2 text-sm text-neutral-500">
             Sign in to your account
           </p>
         </div>
 
         {error && (
-          <div className="rounded-lg bg-red-950/50 border border-red-900 p-4 text-sm text-red-400">
+          <div className="rounded-lg bg-red-50 border border-red-200 p-4 text-sm text-red-600">
             {error}
           </div>
         )}
@@ -72,7 +71,7 @@ export default function Login() {
         <form className="mt-8 space-y-6" onSubmit={handleSubmit}>
           <div className="space-y-4">
             <div>
-              <label htmlFor="email-address" className="block text-sm font-medium text-neutral-300">
+              <label htmlFor="email-address" className="block text-sm font-medium text-neutral-700">
                 Email address
               </label>
               <input
@@ -83,18 +82,18 @@ export default function Login() {
                 required
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
-                className="mt-1 block w-full rounded-md border border-neutral-800 bg-neutral-900 px-3 py-2 text-white placeholder-neutral-500 shadow-sm focus:border-white focus:outline-none focus:ring-1 focus:ring-white sm:text-sm"
+                className="mt-1 block w-full rounded-md border border-neutral-300 bg-white px-3 py-2 text-neutral-900 placeholder-neutral-400 shadow-sm focus:border-brand-primary focus:outline-none focus:ring-1 focus:ring-brand-primary sm:text-sm"
                 placeholder="you@example.com"
               />
             </div>
             <div>
               <div className="flex items-center justify-between">
-                <label htmlFor="password" className="block text-sm font-medium text-neutral-300">
+                <label htmlFor="password" className="block text-sm font-medium text-neutral-700">
                   Password
                 </label>
                 <Link
                   to="/forgot-password"
-                  className="text-sm font-medium text-neutral-400 hover:text-white transition-colors"
+                  className="text-sm font-medium text-brand-primary hover:underline transition-colors"
                 >
                   Forgot password?
                 </Link>
@@ -107,7 +106,7 @@ export default function Login() {
                 required
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
-                className="mt-1 block w-full rounded-md border border-neutral-800 bg-neutral-900 px-3 py-2 text-white placeholder-neutral-500 shadow-sm focus:border-white focus:outline-none focus:ring-1 focus:ring-white sm:text-sm"
+                className="mt-1 block w-full rounded-md border border-neutral-300 bg-white px-3 py-2 text-neutral-900 placeholder-neutral-400 shadow-sm focus:border-brand-primary focus:outline-none focus:ring-1 focus:ring-brand-primary sm:text-sm"
                 placeholder="••••••••"
               />
             </div>
@@ -117,7 +116,7 @@ export default function Login() {
             <Button
               type="submit"
               disabled={loading}
-              className="w-full justify-center bg-white text-black hover:bg-neutral-200 transition-colors font-semibold py-2.5 rounded-md"
+              className="w-full justify-center bg-brand-primary text-white hover:bg-brand-primary-hover transition-colors font-semibold py-2.5 rounded-md shadow-sm"
             >
               {loading ? "Signing in..." : "Sign in"}
             </Button>
@@ -126,10 +125,10 @@ export default function Login() {
 
         <div className="relative mt-6">
           <div className="absolute inset-0 flex items-center" aria-hidden="true">
-            <div className="w-full border-t border-neutral-850"></div>
+            <div className="w-full border-t border-neutral-200"></div>
           </div>
           <div className="relative flex justify-center text-xs uppercase">
-            <span className="bg-neutral-950 px-2 text-neutral-400">Or continue with</span>
+            <span className="bg-white px-2 text-neutral-500">Or continue with</span>
           </div>
         </div>
 
@@ -139,7 +138,7 @@ export default function Login() {
             onClick={handleGoogleSignIn}
             disabled={loading}
             variant="outline"
-            className="w-full flex items-center justify-center gap-2 border-neutral-800 bg-neutral-950 hover:bg-neutral-900 transition-colors text-white py-2.5 rounded-md"
+            className="w-full flex items-center justify-center gap-2 border-neutral-300 bg-white hover:bg-neutral-50 transition-colors text-neutral-700 py-2.5 rounded-md"
           >
             <svg className="h-5 w-5" viewBox="0 0 24 24" fill="currentColor">
               <path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4"/>
@@ -151,9 +150,9 @@ export default function Login() {
           </Button>
         </div>
 
-        <p className="mt-6 text-center text-sm text-neutral-400">
+        <p className="mt-6 text-center text-sm text-neutral-500">
           Don't have an account?{" "}
-          <Link to="/register" className="font-medium text-white hover:underline">
+          <Link to="/register" className="font-medium text-brand-primary hover:underline">
             Sign up
           </Link>
         </p>

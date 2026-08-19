@@ -16,6 +16,11 @@
 }
 
 @layer base {
+  html {
+    font-size: 87.5%; /* Reduces standard 16px font-size to 14px so all text scale down proportionally */
+    scroll-behavior: smooth;
+  }
+
   body {
     background-color: #FFFFFF;
     color: #0F172A;
@@ -24,15 +29,6 @@
     overflow-x: hidden;
     transition-property: background-color, border-color, color, fill, stroke;
     transition-duration: 300ms;
-  }
-  
-  .dark body {
-    background-color: #000000;
-    color: #F8FAFC;
-  }
-  
-  html {
-    scroll-behavior: smooth;
   }
 }
 
@@ -44,17 +40,36 @@
 ::-webkit-scrollbar-track {
   background: transparent;
 }
-.dark ::-webkit-scrollbar-track {
-  background: #000000;
-}
 ::-webkit-scrollbar-thumb {
   background: #E2E8F0;
   border-radius: 9999px;
 }
-.dark ::-webkit-scrollbar-thumb {
-  background: #1E293B;
-}
 ::-webkit-scrollbar-thumb:hover {
   background: #7C3AED;
 }
+
+.electrolize-regular {
+  font-family: "Electrolize", sans-serif;
+  font-weight: 400;
+  font-style: normal;
+}
+
+.play-regular {
+  font-family: "Play", sans-serif;
+  font-weight: 400;
+  font-style: normal;
+}
+
+.play-bold {
+  font-family: "Play", sans-serif;
+  font-weight: 700;
+  font-style: normal;
+}
+
+.zen-dots-regular {
+  font-family: "Zen Dots", sans-serif;
+  font-weight: 400;
+  font-style: normal;
+}
+
 

@@ -395,10 +395,10 @@ export default function Dashboard() {
 
   if (loading) {
     return (
-      <div className="flex min-h-screen items-center justify-center bg-white dark:bg-black text-neutral-900 dark:text-white transition-colors duration-300">
+      <div className="flex min-h-screen items-center justify-center bg-white text-neutral-900">
         <div className="flex flex-col items-center space-y-4">
-          <div className="h-8 w-8 animate-spin rounded-full border-4 border-neutral-200 dark:border-neutral-800 border-t-brand-primary"></div>
-          <p className="text-sm text-neutral-500 dark:text-neutral-400">Loading Dashboard...</p>
+          <div className="h-8 w-8 animate-spin rounded-full border-4 border-neutral-200 border-t-brand-primary"></div>
+          <p className="text-sm text-neutral-500">Loading Dashboard...</p>
         </div>
       </div>
     );
@@ -413,7 +413,7 @@ export default function Dashboard() {
   ] as const;
 
   return (
-    <div className="min-h-screen bg-white dark:bg-black text-neutral-900 dark:text-white antialiased transition-colors duration-300">
+    <div className="min-h-screen bg-white text-neutral-900 antialiased">
       <Navbar />
       
       <div className="w-full px-4 md:px-8 pt-28 pb-16">

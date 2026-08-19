@@ -70,7 +70,7 @@ export default function Testimonials() {
   const activeTestimonial = testimonials[currentIndex];
 
   return (
-    <section className="bg-white dark:bg-black py-20 md:py-28 border-t border-neutral-200 dark:border-neutral-950 overflow-hidden transition-colors duration-300">
+    <section className="bg-neutral-50 py-20 md:py-28 border-t border-neutral-200 overflow-hidden transition-colors duration-300">
       <div className="w-full px-4 md:px-8">
         {/* Title */}
         <div className="text-center max-w-2xl mx-auto mb-12">
@@ -79,7 +79,7 @@ export default function Testimonials() {
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ duration: 0.5 }}
-            className="text-xs font-bold uppercase tracking-widest text-neutral-500 dark:text-slate-400 mb-3.5"
+            className="text-xs font-bold uppercase tracking-widest text-brand-primary mb-3.5"
           >
             Endorsements
           </motion.p>
@@ -88,15 +88,15 @@ export default function Testimonials() {
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ duration: 0.5, delay: 0.05 }}
-            className="text-3xl sm:text-4xl font-extrabold text-neutral-900 dark:text-white tracking-tight"
+            className="text-3xl sm:text-4xl font-extrabold text-neutral-900 tracking-tight"
           >
             Loved By Designers And Clients
           </motion.h2>
         </div>
 
         {/* Testimonial Box */}
-        <div className="relative bg-neutral-50 dark:bg-neutral-950 border border-neutral-200 dark:border-neutral-900 p-8 md:p-12 rounded-none shadow-card min-h-75 flex flex-col justify-between transition-colors duration-300">
-          <div className="absolute top-8 right-8 text-neutral-200 dark:text-neutral-900 pointer-events-none transition-colors duration-300">
+        <div className="relative bg-white border border-neutral-200 p-8 md:p-12 rounded-none shadow-card min-h-75 flex flex-col justify-between transition-colors duration-300">
+          <div className="absolute top-8 right-8 text-neutral-200 pointer-events-none transition-colors duration-300">
             <Quote size={60} className="stroke-[1.5]" />
           </div>
 
@@ -122,12 +122,12 @@ export default function Testimonials() {
                 
                 {/* Founder tag */}
                 {activeTestimonial.type === 'founder' && (
-                  <div className="mb-6 bg-neutral-100 text-neutral-800 dark:bg-neutral-900 dark:text-white border border-neutral-200 dark:border-neutral-800 text-[11px] font-bold uppercase tracking-wider px-2.5 py-1.5 rounded-none inline-block self-start">
+                  <div className="mb-6 bg-brand-primary/10 text-brand-primary border border-brand-primary/20 text-[11px] font-bold uppercase tracking-wider px-2.5 py-1.5 rounded-none inline-block self-start">
                     From Our Founder
                   </div>
                 )}
 
-                <blockquote className="text-lg md:text-xl font-medium text-neutral-850 dark:text-white leading-relaxed mb-8">
+                <blockquote className="text-lg md:text-xl font-medium text-neutral-850 leading-relaxed mb-8">
                   "{activeTestimonial.quote}"
                 </blockquote>
 
@@ -135,11 +135,11 @@ export default function Testimonials() {
                   <img
                     src={activeTestimonial.avatar}
                     alt={activeTestimonial.author}
-                    className="w-12 h-12 rounded-none object-cover border border-neutral-200 dark:border-neutral-900"
+                    className="w-12 h-12 rounded-none object-cover border border-neutral-200"
                   />
                   <div>
-                    <h4 className="font-bold text-neutral-900 dark:text-white text-sm">{activeTestimonial.author}</h4>
-                    <p className="text-xs text-neutral-500 dark:text-slate-400 font-medium">
+                    <h4 className="font-bold text-neutral-900 text-sm">{activeTestimonial.author}</h4>
+                    <p className="text-xs text-neutral-500 font-medium">
                       {activeTestimonial.role} {activeTestimonial.company && `at ${activeTestimonial.company}`}
                     </p>
                   </div>
@@ -149,7 +149,7 @@ export default function Testimonials() {
           </div>
 
           {/* Navigation Controls */}
-          <div className="flex items-center justify-between border-t border-neutral-200 dark:border-neutral-900 pt-6 mt-8">
+          <div className="flex items-center justify-between border-t border-neutral-200 pt-6 mt-8">
             {/* Dots */}
             <div className="flex space-x-2">
               {testimonials.map((_, idx) => (
@@ -160,7 +160,7 @@ export default function Testimonials() {
                     setCurrentIndex(idx);
                   }}
                   className={`w-2.5 h-2.5 rounded-none transition-all duration-300 ${
-                    idx === currentIndex ? 'bg-brand-primary w-6' : 'bg-neutral-200 dark:bg-neutral-800'
+                    idx === currentIndex ? 'bg-brand-primary w-6' : 'bg-neutral-200'
                   }`}
                   aria-label={`Go to slide ${idx + 1}`}
                 />
@@ -171,14 +171,14 @@ export default function Testimonials() {
             <div className="flex space-x-2">
               <button
                 onClick={() => paginate(-1)}
-                className="p-2 border border-neutral-200 dark:border-neutral-800 rounded-none text-neutral-500 dark:text-slate-400 hover:text-brand-primary dark:hover:text-white hover:border-brand-primary dark:hover:border-neutral-600 transition-colors duration-200 cursor-pointer"
+                className="p-2 border border-neutral-200 rounded-none text-neutral-500 hover:text-brand-primary hover:border-brand-primary transition-colors duration-200 cursor-pointer"
                 aria-label="Previous Testimonial"
               >
                 <ChevronLeft size={18} />
               </button>
               <button
                 onClick={() => paginate(1)}
-                className="p-2 border border-neutral-200 dark:border-neutral-800 rounded-none text-neutral-500 dark:text-slate-400 hover:text-brand-primary dark:hover:text-white hover:border-brand-primary dark:hover:border-neutral-600 transition-colors duration-200 cursor-pointer"
+                className="p-2 border border-neutral-200 rounded-none text-neutral-500 hover:text-brand-primary hover:border-brand-primary transition-colors duration-200 cursor-pointer"
                 aria-label="Next Testimonial"
               >
                 <ChevronRight size={18} />

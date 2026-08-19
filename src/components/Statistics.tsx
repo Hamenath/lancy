@@ -37,19 +37,19 @@ function StatItem({ target, suffix, label }: StatItemProps) {
       <GlowCard 
         customSize={true} 
         glowColor="purple" 
-        className="w-full text-center p-8 bg-neutral-50/50 dark:bg-neutral-950/40 backdrop-blur-xl border border-neutral-200 dark:border-neutral-900 rounded-none transition-all duration-300 relative z-10 group hover:border-brand-primary/50"
+        className="w-full text-center p-8 bg-white border border-neutral-200 rounded-none transition-all duration-300 relative z-10 group hover:border-brand-primary/50 shadow-sm"
       >
         <motion.div 
           initial={{ opacity: 0, y: 15 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           transition={{ duration: 0.5 }}
-          className="text-4xl sm:text-5xl font-extrabold text-neutral-900 dark:text-white tracking-tight mb-2.5 relative z-20 group-hover:text-brand-primary dark:group-hover:text-brand-light transition-all duration-300"
+          className="text-4xl sm:text-5xl font-extrabold text-neutral-900 tracking-tight mb-2.5 relative z-20 group-hover:text-brand-primary transition-all duration-300"
         >
           {count}
           {suffix}
         </motion.div>
-        <div className="text-xs sm:text-sm font-semibold uppercase tracking-wider text-neutral-500 dark:text-slate-400 relative z-20 group-hover:text-neutral-900 dark:group-hover:text-white transition-all duration-300">{label}</div>
+        <div className="text-xs sm:text-sm font-semibold uppercase tracking-wider text-neutral-500 relative z-20 group-hover:text-neutral-900 transition-all duration-300">{label}</div>
       </GlowCard>
     </div>
   );
@@ -64,7 +64,7 @@ export default function Statistics() {
   ];
 
   return (
-    <section className="bg-white dark:bg-black py-20 md:py-24 border-t border-neutral-200 dark:border-neutral-950 transition-colors duration-300">
+    <section className="bg-white py-20 md:py-24 border-t border-neutral-200 transition-colors duration-300">
       <div className="w-full px-4 md:px-8">
         <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
           {stats.map((stat) => (

@@ -54,7 +54,7 @@ export const HeroParallax = ({
   return (
     <div
       ref={ref}
-      className="h-[220vh] sm:h-[250vh] md:h-[300vh] py-20 md:py-40 overflow-hidden antialiased relative flex flex-col self-auto perspective-[1000px] transform-3d bg-white text-neutral-900 dark:bg-black dark:text-white transition-colors duration-300"
+      className="h-[220vh] sm:h-[250vh] md:h-[300vh] py-20 md:py-40 overflow-hidden antialiased relative flex flex-col self-auto perspective-[1000px] transform-3d bg-neutral-950 text-white transition-colors duration-300"
     >
       <Header />
       <motion.div
@@ -102,7 +102,7 @@ export const Header = () => {
   return (
     <div className="w-full relative z-20 flex flex-col items-center justify-center py-12 md:py-20 px-4 md:px-8 left-0 top-0 text-center">
       {/* Launching Soon Badge */}
-      <div className="inline-flex items-center space-x-2 bg-neutral-150 border border-neutral-200 dark:bg-neutral-900 dark:border-neutral-800 px-3.5 py-1.5 rounded-none text-xs font-semibold text-neutral-800 dark:text-slate-200 mb-6 w-fit">
+      <div className="inline-flex items-center space-x-2 bg-neutral-900 border border-neutral-800 px-3.5 py-1.5 rounded-none text-xs font-semibold text-slate-200 mb-6 w-fit">
         <span className="flex h-2 w-2 relative">
           <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-brand-primary opacity-75"></span>
           <span className="relative inline-flex rounded-full h-2 w-2 bg-brand-primary"></span>
@@ -110,13 +110,13 @@ export const Header = () => {
         <span>🚀 Launching Soon</span>
       </div>
 
-      <h1 className="text-4xl md:text-7xl font-extrabold tracking-tight text-neutral-900 dark:text-white leading-[1.1] mb-6">
+      <h1 className="text-4xl md:text-7xl font-extrabold tracking-tight text-white leading-[1.1] mb-6">
         Find Creative Designers <br />
         <span className="bg-linear-to-r from-brand-primary to-brand-light bg-clip-text text-transparent">
           For Your Next Big Idea
         </span>
       </h1>
-      <p className="max-w-2xl text-lg text-neutral-500 dark:text-slate-400 leading-relaxed mb-8">
+      <p className="max-w-2xl text-lg text-neutral-400 leading-relaxed mb-8">
         Lanzy helps businesses connect directly with talented designers. No commissions. No middlemen. Just creativity and collaboration.
       </p>
       
@@ -124,13 +124,13 @@ export const Header = () => {
       <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-center space-y-3.5 sm:space-y-0 sm:space-x-4 w-full sm:w-auto">
         <a
           href="/designers"
-          className="bg-brand-primary hover:bg-brand-primary-hover text-white text-center font-semibold px-7 py-3.5 rounded-none shadow-sm transition-all duration-200 dark:bg-white dark:text-black dark:hover:bg-neutral-200"
+          className="bg-brand-primary hover:bg-brand-primary-hover text-white text-center font-semibold px-7 py-3.5 rounded-none shadow-sm transition-all duration-200"
         >
           Explore Designers
         </a>
         <a
           href="/register"
-          className="bg-neutral-100 hover:bg-neutral-200 text-neutral-900 text-center font-semibold px-7 py-3.5 rounded-none border border-neutral-200 dark:bg-neutral-950 dark:hover:bg-neutral-900 dark:text-white dark:border-neutral-800 transition-all duration-200"
+          className="bg-neutral-900 hover:bg-neutral-800 text-white text-center font-semibold px-7 py-3.5 rounded-none border border-neutral-800 transition-all duration-200"
         >
           Join as Designer
         </a>
@@ -159,7 +159,7 @@ export const ProductCard = ({
         y: -20,
       }}
       key={product.title}
-      className="group/product h-48 w-[18rem] sm:h-64 sm:w-[24rem] md:h-96 md:w-120 relative shrink-0 rounded-none overflow-hidden border border-neutral-200 dark:border-neutral-800"
+      className="group/product h-48 w-[18rem] sm:h-64 sm:w-[24rem] md:h-96 md:w-120 relative shrink-0 rounded-none overflow-hidden border border-neutral-800"
     >
       <a
         href={product.link}
@@ -175,7 +175,7 @@ export const ProductCard = ({
         />
       </a>
       <div className="absolute inset-0 h-full w-full opacity-0 group-hover/product:opacity-40 bg-black pointer-events-none transition-opacity duration-200"></div>
-      <h2 className="absolute bottom-4 left-4 opacity-0 group-hover/product:opacity-100 text-neutral-900 dark:text-white font-bold bg-white/95 dark:bg-neutral-950/90 px-3 py-1.5 rounded-none text-sm transition-opacity duration-200 border border-neutral-200 dark:border-neutral-800">
+      <h2 className="absolute bottom-4 left-4 opacity-0 group-hover/product:opacity-100 text-white font-bold bg-neutral-950/90 px-3 py-1.5 rounded-none text-sm transition-opacity duration-200 border border-neutral-800">
         {product.title}
       </h2>
     </motion.div>

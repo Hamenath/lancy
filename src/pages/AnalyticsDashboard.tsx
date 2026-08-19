@@ -40,7 +40,7 @@ export default function AnalyticsDashboard() {
 
   if (!user) {
     return (
-      <div className="flex min-h-screen items-center justify-center bg-black text-white">
+      <div className="flex min-h-screen items-center justify-center bg-white text-neutral-900">
         <p>Please log in to view your analytics.</p>
       </div>
     );
@@ -49,7 +49,7 @@ export default function AnalyticsDashboard() {
   const isClient = (user as any).role === "CLIENT";
 
   return (
-    <div className="relative min-h-screen bg-black text-white antialiased flex flex-col justify-between">
+    <div className="relative min-h-screen bg-white text-neutral-900 antialiased flex flex-col justify-between">
       <div className="flex-1 flex flex-col">
         <Navbar />
 

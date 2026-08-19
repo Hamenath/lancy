@@ -80,7 +80,7 @@ export default function AddProject() {
   };
 
   return (
-    <div className="relative min-h-screen bg-black text-white antialiased flex flex-col justify-between">
+    <div className="relative min-h-screen bg-white text-neutral-900 antialiased flex flex-col justify-between">
       <div>
         <Navbar />
 

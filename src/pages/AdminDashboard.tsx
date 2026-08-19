@@ -91,7 +91,7 @@ export default function AdminDashboard() {
 
   if (!user || (user as any).role !== "ADMIN") {
     return (
-      <div className="min-h-screen bg-black text-white flex flex-col justify-center items-center p-6 space-y-4">
+      <div className="min-h-screen bg-white text-neutral-900 flex flex-col justify-center items-center p-6 space-y-4">
         <ShieldAlert className="size-12 text-red-500" />
         <h2 className="text-xl font-bold">Access Restricted</h2>
         <p className="text-xs text-neutral-400 text-center max-w-sm">
@@ -102,7 +102,7 @@ export default function AdminDashboard() {
   }
 
   return (
-    <div className="relative min-h-screen bg-black text-white antialiased flex flex-col justify-between">
+    <div className="relative min-h-screen bg-white text-neutral-900 antialiased flex flex-col justify-between">
       <div className="flex-1 flex flex-col">
         <Navbar />
 

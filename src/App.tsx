@@ -1,7 +1,6 @@
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import { AuthProvider } from "./context/AuthContext";
 import { ThemeProvider } from "./context/ThemeContext";
-import Navbar from "./components/Navbar";
 import Hero from "./components/Hero";
 import WhyChooseLanzy from "./components/WhyChooseLanzy";
 import Categories from "./components/Categories";
@@ -32,11 +31,8 @@ import PageTransition from "./components/PageTransition";
 
 function Home() {
   return (
-    <div className="relative min-h-screen bg-white dark:bg-black text-neutral-900 dark:text-white antialiased transition-colors duration-300">
-      {/* Sticky Header */}
-      <Navbar />
-
-      {/* Hero Section */}
+    <div className="relative min-h-screen bg-white text-neutral-900 antialiased">
+      {/* Hero Section with Quordix Navbar */}
       <Hero />
 
       {/* Why Choose Lanzy Section */}
