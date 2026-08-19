@@ -10,10 +10,18 @@ import {
   deleteDoc, 
   limit 
 } from "firebase/firestore";
+import { apiFetch } from "./apiConfig";
 import type { Freelancer } from "../types";
 
 export const freelancerService = {
   async getAllFreelancers(): Promise<Freelancer[]> {
+    // 1. Try Backend REST API first
+    const apiData = await apiFetch<Freelancer[]>('/freelancers');
+    if (apiData && Array.isArray(apiData) && apiData.length > 0) {
+      return apiData;
+    }
+
+    // 2. Fallback to Firebase/Firestore if API unreachable or empty
     if (!db || !db.app) return [];
     try {
       const usersSnap = await getDocs(collection(db, "users"));
@@ -23,7 +31,6 @@ export const freelancerService = {
         const userData = docSnap.data();
         const userId = docSnap.id;
 
-        // Ratings calculation
         const revQuery = query(collection(db, "reviews"), where("designerId", "==", userId));
         const revSnap = await getDocs(revQuery);
         let totalRating = 0;
@@ -32,7 +39,6 @@ export const freelancerService = {
         });
         const avgRating = revSnap.size > 0 ? totalRating / revSnap.size : 5.0;
 
-        // Portfolio preview
         const projQuery = query(collection(db, "projects"), where("designerId", "==", userId), limit(1));
         const projSnap = await getDocs(projQuery);
         let portfolioUrl = "https://images.unsplash.com/photo-1541462608141-2ffb68df685e?auto=format&fit=crop&q=80&w=500";
@@ -67,6 +73,9 @@ export const freelancerService = {
   },
 
   async getFreelancerById(id: string): Promise<Freelancer | null> {
+    const apiData = await apiFetch<Freelancer>(`/freelancers/${id}`);
+    if (apiData) return apiData;
+
     if (!db || !db.app) return null;
     try {
       const userRef = doc(db, "users", id);
