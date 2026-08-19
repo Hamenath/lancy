@@ -35,12 +35,20 @@ export interface Project {
   id: string;
   title: string;
   description: string;
-  imageUrl: string;
+  imageUrl?: string;
   category?: string;
   freelancerId?: string;
   designerId?: string;
   clientId?: string;
+  clientName?: string;
+  clientPhoto?: string;
   budget?: number;
+  currency?: string;
+  projectType?: string;
+  experienceLevel?: string;
+  skills?: string[];
+  status?: string;
+  proposalsCount?: number;
   createdAt?: string;
 }
 

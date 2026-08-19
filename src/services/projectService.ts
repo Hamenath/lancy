@@ -11,6 +11,8 @@ import {
 import { apiFetch } from "./apiConfig";
 import type { Project } from "../types";
 
+export type { Project };
+
 export const projectService = {
   async getAllProjects(category?: string): Promise<Project[]> {
     const endpoint = category ? `/projects?category=${encodeURIComponent(category)}` : '/projects';
