@@ -32,6 +32,8 @@ model User {
   participants        ConversationParticipant[]
   messages            Message[]                 @relation("SenderMessages")
   notifications       Notification[]
+  payments            Payment[]                 @relation("PayerPayments")
+  ledgerEntries       LedgerEntry[]
 }
 
 model FreelancerProfile {
@@ -105,25 +107,28 @@ model Contract {
   expectedEndDate DateTime?
   status          String      @default("ACTIVE")
   milestones      Milestone[]
+  payments        Payment[]
   createdAt       DateTime    @default(now())
   updatedAt       DateTime    @updatedAt
 }
 
 model Milestone {
-  id           String    @id @default(uuid())
-  contractId   String
-  contract     Contract  @relation(fields: [contractId], references: [id], onDelete: Cascade)
-  title        String
-  description  String
-  amount       Float
-  dueDate      DateTime?
-  order        Int       @default(1)
-  status       String    @default("PENDING")
-  submittedAt  DateTime?
-  approvedAt   DateTime?
-  changeReason String?
-  createdAt    DateTime  @default(now())
-  updatedAt    DateTime  @updatedAt
+  id            String    @id @default(uuid())
+  contractId    String
+  contract      Contract  @relation(fields: [contractId], references: [id], onDelete: Cascade)
+  title         String
+  description   String
+  amount        Float
+  dueDate       DateTime?
+  order         Int       @default(1)
+  status        String    @default("PENDING")
+  paymentStatus String    @default("UNPAID") // UNPAID | PAYMENT_PENDING | PAID
+  submittedAt   DateTime?
+  approvedAt    DateTime?
+  changeReason  String?
+  payments      Payment[]
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
 }
 
 model Conversation {
@@ -170,4 +175,59 @@ model Notification {
   metadata  String?
   readAt    DateTime?
   createdAt DateTime  @default(now())
+}
+
+model Payment {
+  id                String        @id @default(uuid())
+  contractId        String
+  contract          Contract      @relation(fields: [contractId], references: [id], onDelete: Cascade)
+  milestoneId       String
+  milestone         Milestone     @relation(fields: [milestoneId], references: [id], onDelete: Cascade)
+  payerId           String
+  payer             User          @relation("PayerPayments", fields: [payerId], references: [id], onDelete: Cascade)
+  amount            Int           // Stored as integer minor units (e.g. 10000 cents = $100.00)
+  currency          String        @default("USD")
+  provider          String        @default("STRIPE")
+  providerPaymentId String?       @unique
+  status            String        @default("PENDING") // PENDING | PROCESSING | SUCCEEDED | FAILED | CANCELLED | REFUNDED | PARTIALLY_REFUNDED
+  ledgerEntries     LedgerEntry[]
+  refunds           Refund[]
+  createdAt         DateTime      @default(now())
+  updatedAt         DateTime      @updatedAt
+}
+
+model WebhookEvent {
+  id              String   @id @default(uuid())
+  provider        String
+  providerEventId String   @unique
+  eventType       String
+  processedAt     DateTime @default(now())
+  createdAt       DateTime @default(now())
+}
+
+model LedgerEntry {
+  id          String   @id @default(uuid())
+  userId      String
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  paymentId   String?
+  payment     Payment? @relation(fields: [paymentId], references: [id], onDelete: SetNull)
+  contractId  String?
+  milestoneId String?
+  type        String   // CLIENT_PAYMENT | PLATFORM_FEE | FREELANCER_EARNING | REFUND | ADJUSTMENT
+  amount      Int      // Integer minor units
+  currency    String   @default("USD")
+  direction   String   // CREDIT | DEBIT
+  metadata    String?
+  createdAt   DateTime @default(now())
+}
+
+model Refund {
+  id               String   @id @default(uuid())
+  paymentId        String
+  payment          Payment  @relation(fields: [paymentId], references: [id], onDelete: Cascade)
+  amount           Int      // Integer minor units
+  reason           String?
+  providerRefundId String?  @unique
+  status           String   @default("COMPLETED")
+  createdAt        DateTime @default(now())
 }
