@@ -13,31 +13,20 @@ enum Role {
   ADMIN
 }
 
-enum ProjectStatus {
-  OPEN
-  IN_PROGRESS
-  COMPLETED
-  CANCELLED
-}
-
-enum ProposalStatus {
-  PENDING
-  ACCEPTED
-  REJECTED
-}
-
 model User {
-  id           String             @id @default(uuid())
-  email        String             @unique
-  name         String
-  role         String             @default("FREELANCER")
-  photo        String?
-  firebaseUid  String?            @unique
-  createdAt    DateTime           @default(now())
-  updatedAt    DateTime           @updatedAt
-  profile      FreelancerProfile?
-  projects     Project[]          @relation("ClientProjects")
-  proposals    Proposal[]         @relation("FreelancerProposals")
+  id            String             @id @default(uuid())
+  email         String             @unique
+  name          String
+  role          String             @default("FREELANCER")
+  status        String             @default("ACTIVE")
+  emailVerified Boolean            @default(false)
+  photo         String?
+  firebaseUid   String?            @unique
+  createdAt     DateTime           @default(now())
+  updatedAt     DateTime           @updatedAt
+  profile       FreelancerProfile?
+  projects      Project[]          @relation("ClientProjects")
+  proposals     Proposal[]         @relation("FreelancerProposals")
 }
 
 model FreelancerProfile {
@@ -48,7 +37,7 @@ model FreelancerProfile {
   bio          String?
   hourlyRate   Float     @default(0)
   location     String?   @default("Remote")
-  skills       String    @default("Figma, React, UI/UX") // Stored as comma-separated string in SQLite
+  skills       String    @default("Figma, React, UI/UX")
   rating       Float     @default(5.0)
   reviewsCount Int       @default(0)
   isVerified   Boolean   @default(false)
@@ -57,29 +46,36 @@ model FreelancerProfile {
 }
 
 model Project {
-  id          String     @id @default(uuid())
-  title       String
-  description String
-  budget      Float      @default(0)
-  category    String?
-  imageUrl    String?
-  status      String     @default("OPEN")
-  clientId    String
-  client      User       @relation("ClientProjects", fields: [clientId], references: [id], onDelete: Cascade)
-  proposals   Proposal[]
-  createdAt   DateTime   @default(now())
-  updatedAt   DateTime   @updatedAt
+  id              String     @id @default(uuid())
+  title           String
+  description     String
+  budget          Float      @default(0)
+  currency        String     @default("USD")
+  category        String?
+  projectType     String     @default("FIXED_PRICE")
+  experienceLevel String     @default("INTERMEDIATE")
+  skills          String     @default("")
+  deadline        DateTime?
+  imageUrl        String?
+  status          String     @default("OPEN")
+  clientId        String
+  client          User       @relation("ClientProjects", fields: [clientId], references: [id], onDelete: Cascade)
+  proposals       Proposal[]
+  createdAt       DateTime   @default(now())
+  updatedAt       DateTime   @updatedAt
 }
 
 model Proposal {
-  id           String   @id @default(uuid())
-  projectId    String
-  project      Project  @relation(fields: [projectId], references: [id], onDelete: Cascade)
-  freelancerId String
-  freelancer   User     @relation("FreelancerProposals", fields: [freelancerId], references: [id], onDelete: Cascade)
-  bidAmount    Float
-  coverLetter  String
-  status       String   @default("PENDING")
-  createdAt    DateTime @default(now())
-  updatedAt    DateTime @updatedAt
+  id             String   @id @default(uuid())
+  projectId      String
+  project        Project  @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  freelancerId   String
+  freelancer     User     @relation("FreelancerProposals", fields: [freelancerId], references: [id], onDelete: Cascade)
+  bidAmount      Float
+  proposedBudget Float?
+  estimatedDays  Int      @default(7)
+  coverLetter    String
+  status         String   @default("PENDING")
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
 }
