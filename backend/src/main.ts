@@ -1,12 +1,19 @@
 import { NestFactory } from '@nestjs/core';
 import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
 import { AppModule } from './app.module';
+import { GlobalExceptionFilter } from './common/filters/global-exception.filter';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
 
+  app.useGlobalFilters(new GlobalExceptionFilter());
+
+  const corsOrigins = process.env.CORS_ORIGINS 
+    ? process.env.CORS_ORIGINS.split(',').map((o) => o.trim())
+    : ['http://localhost:5173', 'http://localhost:3000'];
+
   app.enableCors({
-    origin: '*',
+    origin: corsOrigins,
     credentials: true,
   });
 
@@ -19,6 +26,7 @@ async function bootstrap() {
     .addTag('freelancers')
     .addTag('projects')
     .addTag('proposals')
+    .addTag('health')
     .build();
 
   const document = SwaggerModule.createDocument(app, config);
