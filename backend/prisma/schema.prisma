@@ -34,6 +34,9 @@ model User {
   notifications       Notification[]
   payments            Payment[]                 @relation("PayerPayments")
   ledgerEntries       LedgerEntry[]
+  submittedReviews    Review[]                  @relation("SubmittedReviews")
+  receivedReviews     Review[]                  @relation("ReceivedReviews")
+  reviewReports       ReviewReport[]            @relation("ReviewReporters")
 }
 
 model FreelancerProfile {
@@ -108,6 +111,7 @@ model Contract {
   status          String      @default("ACTIVE")
   milestones      Milestone[]
   payments        Payment[]
+  reviews         Review[]
   createdAt       DateTime    @default(now())
   updatedAt       DateTime    @updatedAt
 }
@@ -122,7 +126,7 @@ model Milestone {
   dueDate       DateTime?
   order         Int       @default(1)
   status        String    @default("PENDING")
-  paymentStatus String    @default("UNPAID") // UNPAID | PAYMENT_PENDING | PAID
+  paymentStatus String    @default("UNPAID")
   submittedAt   DateTime?
   approvedAt    DateTime?
   changeReason  String?
@@ -185,11 +189,11 @@ model Payment {
   milestone         Milestone     @relation(fields: [milestoneId], references: [id], onDelete: Cascade)
   payerId           String
   payer             User          @relation("PayerPayments", fields: [payerId], references: [id], onDelete: Cascade)
-  amount            Int           // Stored as integer minor units (e.g. 10000 cents = $100.00)
+  amount            Int
   currency          String        @default("USD")
   provider          String        @default("STRIPE")
   providerPaymentId String?       @unique
-  status            String        @default("PENDING") // PENDING | PROCESSING | SUCCEEDED | FAILED | CANCELLED | REFUNDED | PARTIALLY_REFUNDED
+  status            String        @default("PENDING")
   ledgerEntries     LedgerEntry[]
   refunds           Refund[]
   createdAt         DateTime      @default(now())
@@ -213,10 +217,10 @@ model LedgerEntry {
   payment     Payment? @relation(fields: [paymentId], references: [id], onDelete: SetNull)
   contractId  String?
   milestoneId String?
-  type        String   // CLIENT_PAYMENT | PLATFORM_FEE | FREELANCER_EARNING | REFUND | ADJUSTMENT
-  amount      Int      // Integer minor units
+  type        String
+  amount      Int
   currency    String   @default("USD")
-  direction   String   // CREDIT | DEBIT
+  direction   String
   metadata    String?
   createdAt   DateTime @default(now())
 }
@@ -225,9 +229,45 @@ model Refund {
   id               String   @id @default(uuid())
   paymentId        String
   payment          Payment  @relation(fields: [paymentId], references: [id], onDelete: Cascade)
-  amount           Int      // Integer minor units
+  amount           Int
   reason           String?
   providerRefundId String?  @unique
   status           String   @default("COMPLETED")
   createdAt        DateTime @default(now())
+}
+
+model Review {
+  id                    String         @id @default(uuid())
+  contractId            String
+  contract              Contract       @relation(fields: [contractId], references: [id], onDelete: Cascade)
+  reviewerId            String
+  reviewer              User           @relation("SubmittedReviews", fields: [reviewerId], references: [id], onDelete: Cascade)
+  revieweeId            String
+  reviewee              User           @relation("ReceivedReviews", fields: [revieweeId], references: [id], onDelete: Cascade)
+  rating                Int            // 1 to 5
+  communicationRating   Int            @default(5) // 1 to 5
+  qualityRating         Int            @default(5) // 1 to 5
+  professionalismRating Int            @default(5) // 1 to 5
+  comment               String
+  status                String         @default("PUBLISHED") // PUBLISHED | HIDDEN | FLAGGED | REMOVED
+  verified              Boolean        @default(true)
+  reports               ReviewReport[]
+  createdAt             DateTime       @default(now())
+  updatedAt             DateTime       @updatedAt
+
+  @@unique([contractId, reviewerId])
+}
+
+model ReviewReport {
+  id          String   @id @default(uuid())
+  reviewId    String
+  review      Review   @relation(fields: [reviewId], references: [id], onDelete: Cascade)
+  reporterId  String
+  reporter    User     @relation("ReviewReporters", fields: [reporterId], references: [id], onDelete: Cascade)
+  reason      String   // SPAM | HARASSMENT | OFFENSIVE | FAKE_REVIEW | PERSONAL_INFORMATION | OTHER
+  description String?
+  status      String   @default("PENDING") // PENDING | RESOLVED | DISMISSED
+  createdAt   DateTime @default(now())
+
+  @@unique([reviewId, reporterId])
 }
