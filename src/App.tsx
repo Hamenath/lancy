@@ -19,10 +19,12 @@ import ForgotPassword from "./pages/ForgotPassword";
 import Dashboard from "./pages/Dashboard";
 import Designers from "./pages/Designers";
 import Freelancers from "./pages/Freelancers";
+import Projects from "./pages/Projects";
 import DesignerProfile from "./pages/DesignerProfile";
 import AddProject from "./pages/AddProject";
 import MyProjects from "./pages/MyProjects";
 import Chat from "./pages/Chat";
+import AdminDashboard from "./pages/AdminDashboard";
 import DashboardRequests from "./pages/DashboardRequests";
 import { ProtectedRoute } from "./components/ProtectedRoute";
 import PageTransition from "./components/PageTransition";
@@ -81,6 +83,7 @@ export default function App() {
             <Route path="/forgot-password" element={<ForgotPassword />} />
             <Route path="/designers" element={<PageTransition><Designers /></PageTransition>} />
             <Route path="/freelancers" element={<PageTransition><Freelancers /></PageTransition>} />
+            <Route path="/projects" element={<PageTransition><Projects /></PageTransition>} />
             <Route path="/designer/:id" element={<PageTransition><DesignerProfile /></PageTransition>} />
             <Route path="/freelancer/:id" element={<PageTransition><DesignerProfile /></PageTransition>} />
             <Route 
@@ -89,6 +92,16 @@ export default function App() {
                 <ProtectedRoute>
                   <PageTransition>
                     <Dashboard />
+                  </PageTransition>
+                </ProtectedRoute>
+              } 
+            />
+            <Route 
+              path="/admin" 
+              element={
+                <ProtectedRoute>
+                  <PageTransition>
+                    <AdminDashboard />
                   </PageTransition>
                 </ProtectedRoute>
               } 

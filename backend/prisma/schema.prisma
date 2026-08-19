@@ -37,6 +37,10 @@ model User {
   submittedReviews    Review[]                  @relation("SubmittedReviews")
   receivedReviews     Review[]                  @relation("ReceivedReviews")
   reviewReports       ReviewReport[]            @relation("ReviewReporters")
+  projectReports      ProjectReport[]           @relation("ProjectReporters")
+  openedDisputes      Dispute[]                 @relation("OpenedDisputes")
+  resolvedDisputes    Dispute[]                 @relation("ResolvedDisputes")
+  auditActions        AuditLog[]                @relation("AuditActor")
 }
 
 model FreelancerProfile {
@@ -56,24 +60,25 @@ model FreelancerProfile {
 }
 
 model Project {
-  id              String     @id @default(uuid())
+  id              String          @id @default(uuid())
   title           String
   description     String
-  budget          Float      @default(0)
-  currency        String     @default("USD")
+  budget          Float           @default(0)
+  currency        String          @default("USD")
   category        String?
-  projectType     String     @default("FIXED_PRICE")
-  experienceLevel String     @default("INTERMEDIATE")
-  skills          String     @default("")
+  projectType     String          @default("FIXED_PRICE")
+  experienceLevel String          @default("INTERMEDIATE")
+  skills          String          @default("")
   deadline        DateTime?
   imageUrl        String?
-  status          String     @default("OPEN")
+  status          String          @default("OPEN")
   clientId        String
-  client          User       @relation("ClientProjects", fields: [clientId], references: [id], onDelete: Cascade)
+  client          User            @relation("ClientProjects", fields: [clientId], references: [id], onDelete: Cascade)
   proposals       Proposal[]
   contract        Contract?
-  createdAt       DateTime   @default(now())
-  updatedAt       DateTime   @updatedAt
+  reports         ProjectReport[]
+  createdAt       DateTime        @default(now())
+  updatedAt       DateTime        @updatedAt
 }
 
 model Proposal {
@@ -112,6 +117,7 @@ model Contract {
   milestones      Milestone[]
   payments        Payment[]
   reviews         Review[]
+  disputes        Dispute[]
   createdAt       DateTime    @default(now())
   updatedAt       DateTime    @updatedAt
 }
@@ -244,12 +250,12 @@ model Review {
   reviewer              User           @relation("SubmittedReviews", fields: [reviewerId], references: [id], onDelete: Cascade)
   revieweeId            String
   reviewee              User           @relation("ReceivedReviews", fields: [revieweeId], references: [id], onDelete: Cascade)
-  rating                Int            // 1 to 5
-  communicationRating   Int            @default(5) // 1 to 5
-  qualityRating         Int            @default(5) // 1 to 5
-  professionalismRating Int            @default(5) // 1 to 5
+  rating                Int
+  communicationRating   Int            @default(5)
+  qualityRating         Int            @default(5)
+  professionalismRating Int            @default(5)
   comment               String
-  status                String         @default("PUBLISHED") // PUBLISHED | HIDDEN | FLAGGED | REMOVED
+  status                String         @default("PUBLISHED")
   verified              Boolean        @default(true)
   reports               ReviewReport[]
   createdAt             DateTime       @default(now())
@@ -264,10 +270,51 @@ model ReviewReport {
   review      Review   @relation(fields: [reviewId], references: [id], onDelete: Cascade)
   reporterId  String
   reporter    User     @relation("ReviewReporters", fields: [reporterId], references: [id], onDelete: Cascade)
-  reason      String   // SPAM | HARASSMENT | OFFENSIVE | FAKE_REVIEW | PERSONAL_INFORMATION | OTHER
+  reason      String
   description String?
-  status      String   @default("PENDING") // PENDING | RESOLVED | DISMISSED
+  status      String   @default("PENDING")
   createdAt   DateTime @default(now())
 
   @@unique([reviewId, reporterId])
+}
+
+model ProjectReport {
+  id          String   @id @default(uuid())
+  projectId   String
+  project     Project  @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  reporterId  String
+  reporter    User     @relation("ProjectReporters", fields: [reporterId], references: [id], onDelete: Cascade)
+  reason      String
+  description String?
+  status      String   @default("OPEN") // OPEN | UNDER_REVIEW | RESOLVED | DISMISSED
+  createdAt   DateTime @default(now())
+
+  @@unique([projectId, reporterId])
+}
+
+model Dispute {
+  id           String    @id @default(uuid())
+  contractId   String
+  contract     Contract  @relation(fields: [contractId], references: [id], onDelete: Cascade)
+  openedById   String
+  openedBy     User      @relation("OpenedDisputes", fields: [openedById], references: [id], onDelete: Cascade)
+  reason       String
+  description  String
+  status       String    @default("OPEN") // OPEN | UNDER_REVIEW | WAITING_FOR_RESPONSE | RESOLVED | CLOSED
+  resolution   String?
+  resolvedById String?
+  resolvedBy   User?     @relation("ResolvedDisputes", fields: [resolvedById], references: [id], onDelete: SetNull)
+  resolvedAt   DateTime?
+  createdAt    DateTime  @default(now())
+}
+
+model AuditLog {
+  id         String   @id @default(uuid())
+  actorId    String
+  actor      User     @relation("AuditActor", fields: [actorId], references: [id], onDelete: Cascade)
+  action     String   // USER_SUSPENDED | USER_RESTORED | PROJECT_HIDDEN | DISPUTE_RESOLVED | REPORT_RESOLVED
+  entityType String
+  entityId   String
+  metadata   String?
+  createdAt  DateTime @default(now())
 }
