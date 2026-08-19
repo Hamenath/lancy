@@ -8,7 +8,8 @@ import { useTheme } from '../context/ThemeContext';
 import { notificationService } from '../services/notificationService';
 import type { AppNotification } from '../services/notificationService';
 import { chatService } from '../services/chatService';
-import { Bell, Search, Sun, Moon, LogOut, ChevronDown, LayoutDashboard, Layers, MessageSquare } from 'lucide-react';
+import AiAssistantModal from './AiAssistantModal';
+import { Bell, Search, Sun, Moon, LogOut, ChevronDown, LayoutDashboard, Layers, MessageSquare, Sparkles } from 'lucide-react';
 
 export default function Navbar() {
   const [open, setOpen] = useState(false);
@@ -22,6 +23,7 @@ export default function Navbar() {
   const [unreadMsgCount, setUnreadMsgCount] = useState(0);
   const [showNotifDropdown, setShowNotifDropdown] = useState(false);
   const [showUserDropdown, setShowUserDropdown] = useState(false);
+  const [showAiModal, setShowAiModal] = useState(false);
 
   useEffect(() => {
     if (!user) {
@@ -137,6 +139,16 @@ export default function Navbar() {
 
         {/* Right Actions */}
         <div className="flex items-center gap-3">
+          {/* AI Assistant Button */}
+          <button
+            onClick={() => setShowAiModal(!showAiModal)}
+            className="p-2 border border-brand-primary/30 bg-brand-primary/10 hover:bg-brand-primary/20 text-brand-primary cursor-pointer rounded-none transition-colors flex items-center gap-1.5 text-xs font-bold"
+            title="Lancy AI Assistant"
+          >
+            <Sparkles className="size-4" />
+            <span className="hidden sm:inline">AI Assistant</span>
+          </button>
+
           {/* Light/Dark Toggle */}
           <button
             onClick={toggleTheme}
@@ -234,12 +246,12 @@ export default function Navbar() {
                       Dashboard
                     </Link>
                     <Link 
-                      to="/contracts" 
+                      to="/dashboard/analytics" 
                       onClick={() => setShowUserDropdown(false)}
                       className="flex items-center gap-2 px-3 py-2 text-xs text-neutral-700 hover:bg-neutral-100 dark:text-neutral-350 dark:hover:bg-neutral-900 dark:hover:text-white transition-colors"
                     >
                       <Layers className="size-3.5" />
-                      Contracts
+                      Analytics
                     </Link>
                     <Link 
                       to="/chat" 
@@ -285,6 +297,9 @@ export default function Navbar() {
         </div>
       </nav>
 
+      {/* AI Assistant Modal */}
+      <AiAssistantModal isOpen={showAiModal} onClose={() => setShowAiModal(false)} />
+
       {/* Mobile Drawer Overlay */}
       {open && (
         <div className="fixed inset-0 top-16 bg-white dark:bg-black z-40 flex flex-col p-6 animate-in slide-in-from-right duration-250">
@@ -323,11 +338,11 @@ export default function Navbar() {
                   Dashboard
                 </Link>
                 <Link
-                  to="/contracts"
+                  to="/dashboard/analytics"
                   onClick={() => setOpen(false)}
                   className={buttonVariants({ variant: 'outline', className: 'w-full py-4 text-sm' })}
                 >
-                  Contracts
+                  Analytics
                 </Link>
                 <button 
                   onClick={() => {

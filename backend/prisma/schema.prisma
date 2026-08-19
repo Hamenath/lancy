@@ -41,6 +41,7 @@ model User {
   openedDisputes      Dispute[]                 @relation("OpenedDisputes")
   resolvedDisputes    Dispute[]                 @relation("ResolvedDisputes")
   auditActions        AuditLog[]                @relation("AuditActor")
+  aiLogs              AiUsageLog[]              @relation("UserAiLogs")
 }
 
 model FreelancerProfile {
@@ -321,10 +322,37 @@ model AuditLog {
 
 model AnalyticsEvent {
   id         String   @id @default(uuid())
-  eventType  String   // PROFILE_VIEWED | PROJECT_VIEWED | PROPOSAL_SUBMITTED | PROPOSAL_ACCEPTED | CONTRACT_COMPLETED | SEARCH_PERFORMED
+  eventType  String
   actorId    String?
   entityType String?
   entityId   String?
   metadata   String?
   createdAt  DateTime @default(now())
+}
+
+model AiUsageLog {
+  id                 String   @id @default(uuid())
+  actorId            String?
+  actor              User?    @relation("UserAiLogs", fields: [actorId], references: [id], onDelete: SetNull)
+  provider           String   // GEMINI | OPENAI | MOCK
+  model              String
+  operation          String   // SKILL_EXTRACTION | MATCHING | PROPOSAL_ASSIST | PROFILE_IMPROVE | ASSISTANT
+  inputTokens        Int      @default(0)
+  outputTokens       Int      @default(0)
+  estimatedCostMinor Int      @default(0)
+  latencyMs          Int      @default(0)
+  status             String   @default("SUCCESS") // SUCCESS | TIMEOUT | ERROR
+  createdAt          DateTime @default(now())
+}
+
+model Embedding {
+  id          String   @id @default(uuid())
+  entityType  String   // FREELANCER | PROJECT
+  entityId    String
+  vector      String   // Serialized float array string
+  contentHash String
+  model       String   @default("text-embedding-004")
+  createdAt   DateTime @default(now())
+
+  @@unique([entityType, entityId])
 }
