@@ -3,91 +3,130 @@ import { PrismaClient } from '@prisma/client';
 const prisma = new PrismaClient();
 
 async function main() {
-  console.log('🌱 Seeding Lancy marketplace database...');
+  console.log('🌱 Starting Lancy deterministic database seeding...');
 
-  // Create sample client
-  const client = await prisma.user.upsert({
+  // 1. Create Demo Users
+  const clientUser = await prisma.user.upsert({
     where: { email: 'client@lancy.dev' },
     update: {},
     create: {
       email: 'client@lancy.dev',
-      name: 'Sarah Connor',
+      name: 'Jordan Lee (Demo Client)',
       role: 'CLIENT',
-      photo: 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&q=80&w=250',
+      status: 'ACTIVE',
+      photo: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150',
     },
   });
 
-  // Create sample freelancers
-  const freelancer1 = await prisma.user.upsert({
-    where: { email: 'alex.design@lancy.dev' },
+  const freelancerUser = await prisma.user.upsert({
+    where: { email: 'freelancer@lancy.dev' },
     update: {},
     create: {
-      email: 'alex.design@lancy.dev',
-      name: 'Alex Rivera',
+      email: 'freelancer@lancy.dev',
+      name: 'Alex Morgan (Demo Freelancer)',
       role: 'FREELANCER',
-      photo: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&q=80&w=250',
+      status: 'ACTIVE',
+      photo: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150',
       profile: {
         create: {
-          title: 'Senior UI/UX & Brand Designer',
-          bio: 'Specializing in high-converting SaaS design systems, modern web apps, and design tokens.',
+          title: 'Senior Full-Stack Engineer & Architect',
+          bio: 'Specialized in building high-performance marketplace applications with NestJS, React, TypeScript, and PostgreSQL.',
           hourlyRate: 85,
-          location: 'San Francisco, CA',
-          skills: 'Figma, Design Systems, React, UI/UX, Tailwind CSS',
-          rating: 4.95,
-          reviewsCount: 28,
+          location: 'San Francisco, CA (Remote)',
+          skills: 'React, TypeScript, Node.js, NestJS, PostgreSQL, Figma, UI/UX',
+          rating: 4.9,
+          reviewsCount: 12,
           isVerified: true,
         },
       },
     },
   });
 
-  const freelancer2 = await prisma.user.upsert({
-    where: { email: 'dev.marcus@lancy.dev' },
+  const adminUser = await prisma.user.upsert({
+    where: { email: 'admin@lancy.dev' },
     update: {},
     create: {
-      email: 'dev.marcus@lancy.dev',
-      name: 'Marcus Chen',
-      role: 'FREELANCER',
-      photo: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&q=80&w=250',
-      profile: {
-        create: {
-          title: 'Full Stack Engineer (React & NestJS)',
-          bio: 'Building scalable microservices, WebSockets, and real-time interactive frontends.',
-          hourlyRate: 95,
-          location: 'Toronto, Canada',
-          skills: 'TypeScript, NestJS, React, PostgreSQL, Docker',
-          rating: 5.0,
-          reviewsCount: 42,
-          isVerified: true,
-        },
+      email: 'admin@lancy.dev',
+      name: 'System Administrator',
+      role: 'ADMIN',
+      status: 'ACTIVE',
+    },
+  });
+
+  // 2. Create Demo Project
+  const project = await prisma.project.upsert({
+    where: { id: 'demo-project-1' },
+    update: {},
+    create: {
+      id: 'demo-project-1',
+      title: 'Build a Modern Next.js Freelancer Dashboard',
+      description: 'Looking for an experienced full-stack engineer to build a high-performance, dark-themed marketplace dashboard with real-time WebSocket messaging and financial analytics.',
+      budget: 3500,
+      currency: 'USD',
+      category: 'Development & IT',
+      projectType: 'FIXED_PRICE',
+      experienceLevel: 'EXPERT',
+      skills: 'React, TypeScript, Next.js, Node.js, Tailwind CSS',
+      status: 'OPEN',
+      clientId: clientUser.id,
+    },
+  });
+
+  // 3. Create Demo Proposal
+  const proposal = await prisma.proposal.upsert({
+    where: { id: 'demo-proposal-1' },
+    update: {},
+    create: {
+      id: 'demo-proposal-1',
+      projectId: project.id,
+      freelancerId: freelancerUser.id,
+      bidAmount: 3500,
+      estimatedDays: 14,
+      coverLetter: 'Hi Jordan,\n\nI have extensive experience building scalable marketplace platforms using React, TypeScript, and NestJS. I can deliver a clean, production-ready dashboard within 14 days.',
+      status: 'ACCEPTED',
+    },
+  });
+
+  // 4. Create Demo Contract & Milestones
+  const contract = await prisma.contract.upsert({
+    where: { id: 'demo-contract-1' },
+    update: {},
+    create: {
+      id: 'demo-contract-1',
+      projectId: project.id,
+      proposalId: proposal.id,
+      clientId: clientUser.id,
+      freelancerId: freelancerUser.id,
+      title: 'Build a Modern Next.js Freelancer Dashboard',
+      description: 'Contract for full-stack marketplace dashboard development.',
+      agreedAmount: 3500,
+      currency: 'USD',
+      status: 'ACTIVE',
+      milestones: {
+        create: [
+          {
+            title: 'UI Design & Component Architecture',
+            description: 'Deliver core React components and responsive layout.',
+            amount: 1500,
+            status: 'APPROVED',
+            paymentStatus: 'PAID',
+          },
+          {
+            title: 'API Integration & Analytics',
+            description: 'Integrate NestJS backend REST APIs and time-series charts.',
+            amount: 2000,
+            status: 'IN_PROGRESS',
+            paymentStatus: 'UNPAID',
+          },
+        ],
       },
     },
   });
 
-  // Create sample project
-  const project = await prisma.project.create({
-    data: {
-      title: 'E-Commerce Platform Rebrand & React UI Kit',
-      description: 'Looking for a senior product designer and frontend engineer to build a high-fidelity design system.',
-      budget: 4500,
-      category: 'UI/UX Design',
-      imageUrl: 'https://images.unsplash.com/photo-1541462608141-2ffb68df685e?auto=format&fit=crop&q=80&w=500',
-      clientId: client.id,
-    },
-  });
-
-  // Create proposal
-  await prisma.proposal.create({
-    data: {
-      projectId: project.id,
-      freelancerId: freelancer1.id,
-      bidAmount: 4200,
-      coverLetter: 'I would love to help design and implement the UI system for your e-commerce platform!',
-      status: 'PENDING',
-    },
-  });
-
-  console.log('✅ Seeding complete!');
+  console.log('✅ Deterministic seeding complete!');
+  console.log(`- Demo Client: client@lancy.dev`);
+  console.log(`- Demo Freelancer: freelancer@lancy.dev`);
+  console.log(`- Demo Admin: admin@lancy.dev`);
 }
 
 main()

@@ -1,106 +1,180 @@
-# Lancy — Where Talent Meets Opportunity 🚀
+<div align="center">
 
-> An open-source, enterprise-grade freelancer marketplace platform connecting world-class talent with high-impact projects. Built with React, TypeScript, NestJS, Prisma, PostgreSQL, Socket.IO, and Firebase Authentication.
+# 🚀 Lancy
 
-[![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
-[![TypeScript](https://img.shields.io/badge/TypeScript-5.0-blue)](https://www.typescriptlang.org/)
-[![React](https://img.shields.io/badge/React-19.0-61dafb)](https://react.dev/)
-[![NestJS](https://img.shields.io/badge/NestJS-10.0-e0234e)](https://nestjs.com/)
-[![Prisma](https://img.shields.io/badge/Prisma-6.0-2D3748)](https://www.prisma.io/)
-[![PostgreSQL](https://img.shields.io/badge/PostgreSQL-16.0-336791)](https://www.postgresql.org/)
-[![Socket.IO](https://img.shields.io/badge/Socket.IO-4.7-010101)](https://socket.io/)
+### *Where Talent Meets Opportunity*
 
----
+An open-source, full-stack freelancer marketplace platform built with NestJS, React, TypeScript, Prisma, and AI Candidate Matching.
 
-## 🌟 Platform Architecture & Features
+[![Build & CI](https://github.com/Hamenath/lancy/actions/workflows/ci.yml/badge.svg)](https://github.com/Hamenath/lancy/actions)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+[![Version](https://img.shields.io/badge/version-1.0.0-blue.svg)](https://github.com/Hamenath/lancy/releases/tag/v1.0.0)
+[![TypeScript](https://img.shields.io/badge/TypeScript-5.7-blue)](https://www.typescriptlang.org/)
+[![Node.js](https://img.shields.io/badge/Node.js-20.x-green)](https://nodejs.org/)
 
-Lancy is designed around strict domain boundaries, server-authoritative security, financial correctness, and high-performance search discovery.
-
-### Completed Milestones
-
-#### 📌 Phase 1: Clean Domain Architecture & Component Migration
-- Refactored generic `Designer` terminology to multi-discipline `Freelancer` (Developers, Designers, Writers, Video Editors, Photographers, Marketers).
-- Created domain abstraction layers (`freelancerService`, `projectService`, `contractService`).
-
-#### 📌 Phase 2: NestJS & Prisma Backend Foundation
-- Industrial-grade NestJS REST API with Prisma ORM and SQLite/PostgreSQL database support.
-- OpenAPI / Swagger documentation rendered live at `/api/docs`.
-
-#### 📌 Phase 3: Authentication, Authorization & Identity
-- Firebase Authentication with custom NestJS auth guards (`FirebaseAuthGuard`, `RolesGuard`).
-- Strict Role-Based Access Control (`CLIENT`, `FREELANCER`, `ADMIN`).
-
-#### 📌 Phase 4: Project Publishing, Discovery & Proposal Bidding
-- Client project creation, publishing, and proposal submission workflows.
-- Atomic Prisma `$transaction` handling proposal acceptance and contract creation.
-
-#### 📌 Phase 5: Contract Lifecycle & Milestone Work Approvals
-- Milestone amount verification (`sum(milestones) <= contract.agreedAmount`).
-- Milestone work lifecycle (`PENDING` $\rightarrow$ `IN_PROGRESS` $\rightarrow$ `SUBMITTED` $\rightarrow$ `APPROVED`). Auto-completion of contracts.
-
-#### 📌 Phase 6: Real-Time WebSockets Messaging & System Notifications
-- Authenticated Socket.IO WebSockets gateway (`user:{userId}` and `conversation:{id}` rooms).
-- Live real-time chat, unread message badges, and event-driven notifications (`PROPOSAL_RECEIVED`, `PROPOSAL_ACCEPTED`).
-
-#### 📌 Phase 7: Minor-Unit Integer Payments & Double-Entry Financial Ledger
-- Server-authoritative payments in minor integer units (cents/paise; no floating point math).
-- Webhook signature verification and idempotency protection (`WebhookEvent` with unique `providerEventId`).
-- Immutable double-entry financial ledger (`LedgerEntry`: `CLIENT_PAYMENT`, `PLATFORM_FEE`, `FREELANCER_EARNING`, `REFUND`).
-
-#### 📌 Phase 8: Verified Contract Reviews, Ratings & Reputation System
-- Verified reviews allowed ONLY on completed contracts (`contract.status === 'COMPLETED'`).
-- 1–5 star overall & category ratings (`communication`, `quality`, `professionalism`).
-- User reputation summary calculations, rating distribution breakdowns, and 7-day review edit window.
-
-#### 📌 Phase 9: Search, Discovery & Marketplace Matching Foundation
-- PostgreSQL-native search provider (`SearchProvider` abstraction).
-- Deterministic relevance ranking formula combining skill match, keyword match, reputation signals, and profile completeness.
-- URL-synchronized search state (`/freelancers?q=react&minRating=4&sort=relevance`).
+</div>
 
 ---
 
-## 🏗️ Tech Stack Breakdown
+## 🌟 What is Lancy?
 
-| Area | Technology | Purpose |
-| :--- | :--- | :--- |
-| **Frontend** | React 19, TypeScript, Vite, TailwindCSS, Lucide Icons | Responsive SPA with rich glassmorphism UI |
-| **Backend** | NestJS 10, TypeScript, RxJS, Swagger / OpenAPI | Modular REST API & WebSocket server |
-| **Database** | PostgreSQL / SQLite, Prisma ORM 6 | Relational data persistence & type-safe queries |
-| **Real-time** | Socket.IO, `@nestjs/websockets` | Bi-directional live messaging & notifications |
-| **Auth** | Firebase Auth, Firebase Admin SDK, JWT | Secure identity & token validation |
+**Lancy** is a complete, production-ready open-source freelancer marketplace platform. It enables clients to publish projects, receive bids, establish milestone-based contracts, execute payments via an immutable double-entry financial ledger, communicate in real-time, rate completed work, and leverage AI for semantic candidate matching and proposal assistance.
+
+Whether you want to launch a specialized freelance network, self-host a private talent platform, or explore modern full-stack web architecture, Lancy provides a solid, secure foundation out of the box.
 
 ---
 
-## 🚀 Quick Start & Local Setup
+## ⚡ Key Features
 
-### Prerequisites
-- Node.js `v18.x` or higher
-- npm `v9.x` or higher
+| Category | Feature Description |
+| :--- | :--- |
+| 👤 **Identity & Auth** | Server-authoritative RBAC (`CLIENT`, `FREELANCER`, `ADMIN`) protected by Firebase Auth & NestJS guards. |
+| 💼 **Projects & Bidding** | Project publishing, experience filters, proposal bidding, and shortlist workflows. |
+| 🤝 **Contracts & Milestones** | Milestone submission, change requests, and client approval auto-completion. |
+| 💳 **Financial Ledger** | Minor-unit integer money math (cents), double-entry `LedgerEntry` tables, Stripe Mock provider, and webhook idempotency. |
+| 💬 **Real-Time Messaging** | Socket.IO WebSocket Gateway for instant chat and live unread notification badges. |
+| ⭐ **Verified Reviews** | Verified contract ratings (1-5 integer scores, category breakdowns, 7-day edit window). |
+| 🔎 **Relevance Search** | PostgreSQL & SQLite native multi-signal relevance search with URL query synchronization. |
+| 🛡️ **Trust & Safety** | Admin dashboard (`/admin`), user suspension, project moderation, disputes, and append-only `AuditLog`. |
+| 📊 **Analytics & Reporting** | Real-time platform GMV, revenue time-series, freelancer earnings charts, and CSV exports. |
+| 🤖 **AI Intelligence** | Gemini & Mock AI provider abstraction, skill extraction, proposal drafting assistant, and candidate matching. |
+| 🚀 **DevOps & Production** | Health probes (`/health`, `/ready`), correlation IDs (`x-request-id`), Dockerfile, and GitHub CI workflow. |
 
-### 1. Repository Setup
+---
+
+## 🏗️ System Architecture
+
+```
+                     INTERNET
+                         │
+                         ▼
+                    CDN / DNS
+                         │
+                         ▼
+                  LOAD BALANCER
+                         │
+              ┌──────────┴──────────┐
+              │                     │
+           FRONTEND              BACKEND
+        (React/Vite)         (NestJS/Prisma)
+              │                     │
+              │              ┌──────┼────────┐
+              │              │      │        │
+              │           AUTH   API      JOBS
+              │                     │        │
+              │              ┌──────┼────────┤
+              │              │      │        │
+              │           SQLITE/   CACHE   STORAGE
+              │          POSTGRES   (In-Mem)
+              │              │
+              │        ┌─────┴──────┐
+              │        │            │
+              │     PAYMENTS       AI
+              │   (Ledger Cents) (Provider Abstraction)
+              │
+              └──────────────┬──────────────
+                             │
+                       OBSERVABILITY
+                             │
+                ┌────────────┼────────────┐
+                │            │            │
+             LOGS          METRICS      ERRORS
+        (Correlation ID) (/health)  (Global Filter)
+```
+
+---
+
+## 🛠️ Tech Stack
+
+- **Frontend**: React 18, TypeScript, Vite, Tailwind CSS, Lucide Icons, React Router DOM.
+- **Backend API**: NestJS, Node.js 20, TypeScript, RxJS, Express.
+- **Database & ORM**: SQLite (Development) / PostgreSQL (Production), Prisma ORM v6.
+- **WebSockets**: Socket.IO authenticated gateways.
+- **AI Infrastructure**: Google Gemini API (`GeminiAIProvider`) & Deterministic Fallback (`MockAIProvider`).
+- **DevOps**: Docker, Docker Compose, GitHub Actions CI.
+
+---
+
+## 🚀 Quick Start (Local Development)
+
+### 1. Clone Repository & Install Dependencies
 ```bash
 git clone https://github.com/Hamenath/lancy.git
 cd lancy
-```
-
-### 2. Frontend Installation
-```bash
 npm install
-npm run dev
+cd backend && npm install
 ```
-The frontend application will be running at `http://localhost:5173`.
 
-### 3. Backend Installation & Database Setup
+### 2. Configure Environment
+```bash
+cp backend/.env.example backend/.env
+```
+
+### 3. Initialize Database & Seed Demo Data
 ```bash
 cd backend
-npm install
 npx prisma db push
-npx prisma generate
-npx ts-node src/main.ts
+npm run db:seed
 ```
-The NestJS API server will start at `http://localhost:4000` with Swagger docs at `http://localhost:4000/api/docs`.
+
+### 4. Launch Development Servers
+- **Backend API** (Terminal 1):
+  ```bash
+  cd backend && npm run dev
+  ```
+- **Frontend App** (Terminal 2):
+  ```bash
+  npm run dev
+  ```
+
+Access the application at:
+- **Frontend UI**: `http://localhost:5173`
+- **Backend API**: `http://localhost:4000`
+- **Swagger Docs**: `http://localhost:4000/api/docs`
 
 ---
 
-## 📜 License
+## 🐳 Quick Start with Docker
+
+Run the complete platform stack in one command:
+```bash
+docker compose up -d
+```
+
+---
+
+## 🔑 Demo Login Accounts
+
+After running `npm run db:seed`, you can log in using these demo credentials:
+
+| Role | Email | Password | Access Level |
+| :--- | :--- | :--- | :--- |
+| **Client** | `client@lancy.dev` | *(Any value in dev mode)* | Project creation, hiring, spending analytics. |
+| **Freelancer** | `freelancer@lancy.dev` | *(Any value in dev mode)* | Proposals, milestones, net earnings charts. |
+| **Admin** | `admin@lancy.dev` | *(Any value in dev mode)* | Admin dashboard (`/admin`), user suspension, disputes, audit logs. |
+
+---
+
+## 📚 Documentation Directory
+
+- 📄 [Self-Hosting Guide](docs/self-hosting.md)
+- 📄 [Environment Variables Specification](docs/environment.md)
+- 📄 [Complete System Architecture](docs/architecture.md)
+- 📄 [Production Hardening Checklist](docs/production-checklist.md)
+- 📄 [Security Policy & Disclosures](SECURITY.md)
+- 📄 [Contributing Guidelines](CONTRIBUTING.md)
+- 📄 [Changelog](CHANGELOG.md)
+- 📄 [Product Roadmap](ROADMAP.md)
+- 📄 [FAQ](docs/faq.md)
+
+---
+
+## 🤝 Contributing
+
+We welcome contributions from the community! Please read our [Contributing Guidelines](CONTRIBUTING.md) and [Code of Conduct](CODE_OF_CONDUCT.md) before submitting a Pull Request.
+
+---
+
+## 📄 License
+
 Lancy is open-source software licensed under the [MIT License](LICENSE).
