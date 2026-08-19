@@ -4,8 +4,9 @@ import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
 import FreelancerCard from "../components/FreelancerCard";
 import { DesignerCardSkeleton } from "../components/ui/Skeleton";
-import { SlidersHorizontal, RefreshCw, Search, X } from "lucide-react";
+import { SlidersHorizontal, RefreshCw, Search, Sparkles, CheckCircle2, ThumbsDown } from "lucide-react";
 import { searchService } from "../services/searchService";
+import { recommendationService, type ExplainableMatch } from "../services/recommendationService";
 import type { Freelancer } from "../types";
 
 export default function Freelancers() {
@@ -13,6 +14,7 @@ export default function Freelancers() {
   const [freelancers, setFreelancers] = useState<Freelancer[]>([]);
   const [loading, setLoading] = useState(true);
   const [popularSkills, setPopularSkills] = useState<{ skill: string; count: number }[]>([]);
+  const [recommendations, setRecommendations] = useState<ExplainableMatch[]>([]);
   
   const queryQ = searchParams.get("q") || "";
   const querySkills = searchParams.get("skills") ? searchParams.get("skills")!.split(",") : [];
@@ -28,12 +30,14 @@ export default function Freelancers() {
   const [minRating, setMinRating] = useState(queryMinRating);
   const [sortBy, setSortBy] = useState(querySort);
 
-  // Load Popular Skills once
   useEffect(() => {
     searchService.getPopularSkills().then((res) => setPopularSkills(res));
+    // Fetch recommendations for demo project
+    recommendationService.getFreelancerRecommendations("demo-project-1", 3)
+      .then((res) => setRecommendations(res))
+      .catch(() => {});
   }, []);
 
-  // Sync state to URL search params
   const updateUrlParams = (newParams: Record<string, string | undefined>) => {
     const params = new URLSearchParams(searchParams);
     Object.entries(newParams).forEach(([key, val]) => {
@@ -46,7 +50,6 @@ export default function Freelancers() {
     setSearchParams(params);
   };
 
-  // Perform search query whenever URL search params change
   useEffect(() => {
     async function loadFreelancers() {
       try {
@@ -100,174 +103,219 @@ export default function Freelancers() {
     setSearchParams(new URLSearchParams());
   };
 
-  return (
-    <div className="relative min-h-screen bg-black text-white antialiased flex flex-col justify-between">
-      <div className="flex-1 flex flex-col">
-        <Navbar />
+  const handleDismissRec = (id: string) => {
+    setRecommendations((prev) => prev.filter((r) => r.id !== id));
+    recommendationService.recordFeedback(id, "FREELANCER", "DISMISSED").catch(() => {});
+  };
 
-        {/* Hero Section */}
-        <section className="relative pt-32 pb-12 border-b border-neutral-900 bg-neutral-950/40">
-          <div className="w-full px-4 md:px-8">
-            <div className="max-w-3xl">
-              <div className="inline-flex items-center gap-2 border border-brand-primary/30 bg-brand-primary/10 px-3 py-1 text-xs font-semibold text-brand-primary mb-4 rounded-none">
-                <span>Top Talent Marketplace</span>
-              </div>
-              <h1 className="text-3xl md:text-5xl font-black tracking-tight mb-4">
-                Hire Exceptional <span className="text-transparent bg-clip-text bg-linear-to-r from-brand-primary to-brand-light">Freelancers</span>
-              </h1>
-              <p className="text-neutral-400 text-sm md:text-base leading-relaxed">
-                Connect with verified developers, designers, writers, and digital specialists to build your next breakthrough product.
-              </p>
+  return (
+    <div className="min-h-screen bg-slate-950 text-slate-100 flex flex-col font-sans">
+      <Navbar />
+
+      <main className="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-10">
+        {/* Header Title */}
+        <div className="mb-8">
+          <h1 className="text-3xl sm:text-4xl font-extrabold tracking-tight text-white mb-2">
+            Discover Top Freelancers
+          </h1>
+          <p className="text-slate-400 text-lg">
+            Find verified software engineers, UI/UX designers, copywriters, and digital specialists.
+          </p>
+        </div>
+
+        {/* AI Intelligent Recommendations Banner */}
+        {recommendations.length > 0 && (
+          <div className="mb-10 p-6 rounded-2xl bg-gradient-to-r from-emerald-950/60 via-slate-900 to-emerald-950/40 border border-emerald-500/30 backdrop-blur-md shadow-xl">
+            <div className="flex items-center gap-2 mb-4">
+              <Sparkles className="w-5 h-5 text-emerald-400 animate-pulse" />
+              <h2 className="text-lg font-bold text-white tracking-wide">
+                AI Marketplace Matches (Explainable Recommendations)
+              </h2>
+            </div>
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+              {recommendations.map((rec) => (
+                <div key={rec.id} className="bg-slate-900/90 border border-emerald-500/20 rounded-xl p-4 flex flex-col justify-between hover:border-emerald-500/40 transition">
+                  <div>
+                    <div className="flex justify-between items-center mb-2">
+                      <span className="text-xs font-semibold px-2.5 py-0.5 rounded-full bg-emerald-500/20 text-emerald-300 border border-emerald-500/30">
+                        {rec.matchPercentage}% Match
+                      </span>
+                      <button 
+                        onClick={() => handleDismissRec(rec.id)}
+                        className="text-slate-500 hover:text-slate-300 transition"
+                        title="Dismiss recommendation"
+                      >
+                        <ThumbsDown className="w-3.5 h-3.5" />
+                      </button>
+                    </div>
+                    <h3 className="font-bold text-white text-sm">{rec.item.user?.name || rec.item.title}</h3>
+                    <p className="text-xs text-slate-400 mt-1 leading-relaxed">{rec.explainabilityReason}</p>
+                  </div>
+                  <div className="mt-3 flex items-center justify-between text-xs text-slate-300">
+                    <span className="font-semibold text-emerald-400">${rec.item.hourlyRate}/hr</span>
+                    <span className="flex items-center gap-1 text-slate-400">
+                      <CheckCircle2 className="w-3 h-3 text-emerald-400" /> Verified
+                    </span>
+                  </div>
+                </div>
+              ))}
             </div>
           </div>
-        </section>
+        )}
 
-        {/* Main Content Area */}
-        <div className="w-full px-4 md:px-8 py-8 flex-1">
-          {/* Top Control Bar: Search & Sort */}
-          <form onSubmit={handleSearchSubmit} className="flex flex-col md:flex-row items-stretch md:items-center justify-between gap-4 mb-8">
-            {/* Search Input */}
-            <div className="relative flex-1">
-              <Search className="absolute left-3.5 top-3 size-4 text-neutral-500" />
-              <input
-                type="text"
-                value={searchTerm}
-                onChange={(e) => setSearchTerm(e.target.value)}
-                placeholder="Search freelancers by name, skill, or keyword..."
-                className="w-full h-10 pl-10 pr-4 text-xs bg-neutral-950 border border-neutral-800 text-white placeholder-neutral-500 focus:outline-none focus:border-brand-primary rounded-none transition-colors"
-              />
-            </div>
+        {/* Search Bar */}
+        <form onSubmit={handleSearchSubmit} className="mb-8">
+          <div className="relative flex items-center">
+            <Search className="absolute left-4 w-5 h-5 text-slate-400" />
+            <input
+              type="text"
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+              placeholder="Search by freelancer title, bio, or skill (e.g. React, NestJS, UI/UX)..."
+              className="w-full bg-slate-900 border border-slate-800 rounded-xl py-3.5 pl-12 pr-28 text-white placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-emerald-500"
+            />
+            <button
+              type="submit"
+              className="absolute right-2.5 px-5 py-2 bg-emerald-500 hover:bg-emerald-600 text-slate-950 font-semibold rounded-lg transition"
+            >
+              Search
+            </button>
+          </div>
+        </form>
 
-            {/* Sort & Action Controls */}
-            <div className="flex items-center gap-3">
-              <label className="text-xs text-neutral-400 font-medium whitespace-nowrap">Sort by:</label>
-              <select
-                value={sortBy}
-                onChange={(e) => {
-                  setSortBy(e.target.value);
-                  updateUrlParams({ sort: e.target.value });
-                }}
-                className="h-10 px-3 text-xs bg-neutral-950 border border-neutral-800 text-white focus:outline-none focus:border-brand-primary rounded-none"
-              >
-                <option value="relevance">Relevance Ranking</option>
-                <option value="rating">Highest Rating</option>
-                <option value="reviews">Most Reviews</option>
-                <option value="rate_asc">Hourly Rate: Low to High</option>
-                <option value="rate_desc">Hourly Rate: High to Low</option>
-                <option value="newest">Newest Members</option>
-              </select>
-
-              <button
-                type="button"
-                onClick={handleResetFilters}
-                className="h-10 px-3 border border-neutral-800 hover:bg-neutral-900 text-neutral-400 hover:text-white text-xs font-semibold flex items-center gap-1.5 transition-colors cursor-pointer rounded-none"
-              >
-                <RefreshCw className="size-3.5" />
-                Reset
-              </button>
-            </div>
-          </form>
-
-          {/* Popular Skill Tags */}
-          {popularSkills.length > 0 && (
-            <div className="flex flex-wrap items-center gap-2 mb-8 border-b border-neutral-900 pb-6">
-              <span className="text-xs font-bold text-neutral-500 mr-2">Popular Skills:</span>
-              {popularSkills.map((item) => {
-                const isSelected = selectedSkills.includes(item.skill);
-                return (
-                  <button
-                    key={item.skill}
-                    type="button"
-                    onClick={() => toggleSkill(item.skill)}
-                    className={`text-xs px-2.5 py-1 border transition-colors cursor-pointer rounded-none ${
-                      isSelected
-                        ? "bg-brand-primary text-white border-brand-primary font-bold"
-                        : "bg-neutral-950 text-neutral-400 border-neutral-850 hover:border-neutral-700 hover:text-white"
-                    }`}
-                  >
-                    {item.skill}
-                    {isSelected && <X className="inline-block size-3 ml-1" />}
-                  </button>
-                );
-              })}
-            </div>
-          )}
-
-          {/* Sidebar & Grid Layout */}
-          <div className="flex flex-col lg:flex-row gap-8">
-            {/* Filters Sidebar */}
-            <aside className="w-full lg:w-64 shrink-0 border border-neutral-900 bg-neutral-950/20 p-5 rounded-none space-y-6 h-fit">
-              <div className="flex items-center justify-between border-b border-neutral-900 pb-3">
-                <h3 className="text-sm font-bold tracking-wider uppercase text-neutral-400 flex items-center gap-2">
-                  <SlidersHorizontal className="size-4 text-brand-primary" /> Filters
+        {/* Content Layout */}
+        <div className="grid grid-cols-1 lg:grid-cols-4 gap-8">
+          {/* Filters Sidebar */}
+          <aside className="space-y-6">
+            <div className="bg-slate-900 border border-slate-800 rounded-xl p-5">
+              <div className="flex items-center justify-between mb-4">
+                <h3 className="font-bold text-white flex items-center gap-2">
+                  <SlidersHorizontal className="w-4 h-4 text-emerald-400" /> Filters
                 </h3>
+                <button
+                  onClick={handleResetFilters}
+                  className="text-xs text-slate-400 hover:text-emerald-400 flex items-center gap-1 transition"
+                >
+                  <RefreshCw className="w-3 h-3" /> Reset
+                </button>
               </div>
 
-              {/* Min Rating */}
-              <div className="space-y-2">
-                <label className="text-xs font-bold text-neutral-300">Min Rating: {minRating} Stars</label>
-                <input
-                  type="range"
-                  min="0"
-                  max="5"
-                  step="1"
+              {/* Sort By */}
+              <div className="mb-6">
+                <label className="block text-xs font-semibold text-slate-400 mb-2 uppercase">Sort By</label>
+                <select
+                  value={sortBy}
+                  onChange={(e) => {
+                    setSortBy(e.target.value);
+                    updateUrlParams({ sort: e.target.value });
+                  }}
+                  className="w-full bg-slate-950 border border-slate-800 rounded-lg p-2.5 text-sm text-white focus:outline-none focus:ring-1 focus:ring-emerald-500"
+                >
+                  <option value="relevance">Relevance Ranking</option>
+                  <option value="rating">Highest Rated</option>
+                  <option value="rate_low">Rate: Low to High</option>
+                  <option value="rate_high">Rate: High to Low</option>
+                  <option value="newest">Newest Members</option>
+                </select>
+              </div>
+
+              {/* Hourly Rate Filter */}
+              <div className="mb-6">
+                <label className="block text-xs font-semibold text-slate-400 mb-2 uppercase">
+                  Hourly Rate (${minRate} - ${maxRate}/hr)
+                </label>
+                <div className="grid grid-cols-2 gap-2">
+                  <input
+                    type="number"
+                    value={minRate}
+                    onChange={(e) => setMinRate(Number(e.target.value))}
+                    placeholder="Min Rate"
+                    className="bg-slate-950 border border-slate-800 rounded-lg p-2 text-xs text-white"
+                  />
+                  <input
+                    type="number"
+                    value={maxRate}
+                    onChange={(e) => setMaxRate(Number(e.target.value))}
+                    placeholder="Max Rate"
+                    className="bg-slate-950 border border-slate-800 rounded-lg p-2 text-xs text-white"
+                  />
+                </div>
+              </div>
+
+              {/* Rating Filter */}
+              <div className="mb-6">
+                <label className="block text-xs font-semibold text-slate-400 mb-2 uppercase">Minimum Rating</label>
+                <select
                   value={minRating}
                   onChange={(e) => {
                     setMinRating(Number(e.target.value));
                     updateUrlParams({ minRating: e.target.value });
                   }}
-                  className="w-full accent-brand-primary cursor-pointer"
-                />
+                  className="w-full bg-slate-950 border border-slate-800 rounded-lg p-2.5 text-sm text-white"
+                >
+                  <option value="0">Any Rating</option>
+                  <option value="4.5">4.5+ Stars</option>
+                  <option value="4.0">4.0+ Stars</option>
+                  <option value="3.5">3.5+ Stars</option>
+                </select>
               </div>
 
-              {/* Hourly Rate */}
-              <div className="space-y-2">
-                <label className="text-xs font-bold text-neutral-300">Max Hourly Rate: ${maxRate}/hr</label>
-                <input
-                  type="range"
-                  min="10"
-                  max="300"
-                  step="10"
-                  value={maxRate}
-                  onChange={(e) => {
-                    setMaxRate(Number(e.target.value));
-                    updateUrlParams({ maxRate: e.target.value });
-                  }}
-                  className="w-full accent-brand-primary cursor-pointer"
-                />
+              {/* Popular Skills */}
+              <div>
+                <label className="block text-xs font-semibold text-slate-400 mb-3 uppercase">Popular Skills</label>
+                <div className="flex flex-wrap gap-1.5">
+                  {popularSkills.slice(0, 10).map(({ skill }) => {
+                    const active = selectedSkills.includes(skill);
+                    return (
+                      <button
+                        key={skill}
+                        onClick={() => toggleSkill(skill)}
+                        className={`text-xs px-2.5 py-1 rounded-md border transition ${
+                          active
+                            ? "bg-emerald-500/20 border-emerald-500 text-emerald-300 font-medium"
+                            : "bg-slate-950 border-slate-800 text-slate-400 hover:border-slate-700"
+                        }`}
+                      >
+                        {skill}
+                      </button>
+                    );
+                  })}
+                </div>
               </div>
-            </aside>
+            </div>
+          </aside>
 
-            {/* Results Grid */}
-            <main className="flex-1">
-              {loading ? (
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                  {Array.from({ length: 6 }).map((_, i) => (
-                    <DesignerCardSkeleton key={i} />
-                  ))}
-                </div>
-              ) : freelancers.length === 0 ? (
-                <div className="border border-neutral-900 bg-neutral-950/20 p-12 text-center rounded-none space-y-3">
-                  <p className="text-base font-bold text-neutral-300">No freelancers found matching your criteria.</p>
-                  <p className="text-xs text-neutral-500">Try broadening your search terms or resetting filters.</p>
-                  <button
-                    onClick={handleResetFilters}
-                    className="mt-4 px-4 py-2 bg-white text-black font-bold text-xs hover:bg-neutral-200 transition-colors cursor-pointer rounded-none"
-                  >
-                    Clear All Filters
-                  </button>
-                </div>
-              ) : (
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                  {freelancers.map((freelancer) => (
-                    <FreelancerCard key={freelancer.id} freelancer={freelancer} />
-                  ))}
-                </div>
-              )}
-            </main>
+          {/* Results Grid */}
+          <div className="lg:col-span-3">
+            {loading ? (
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <DesignerCardSkeleton />
+                <DesignerCardSkeleton />
+                <DesignerCardSkeleton />
+                <DesignerCardSkeleton />
+              </div>
+            ) : freelancers.length === 0 ? (
+              <div className="text-center py-16 bg-slate-900/50 rounded-2xl border border-slate-800">
+                <h3 className="text-xl font-bold text-white mb-2">No freelancers found</h3>
+                <p className="text-slate-400 mb-6">Try adjusting your search criteria or resetting filters.</p>
+                <button
+                  onClick={handleResetFilters}
+                  className="px-6 py-2.5 bg-emerald-500 hover:bg-emerald-600 text-slate-950 font-semibold rounded-lg transition"
+                >
+                  Reset All Filters
+                </button>
+              </div>
+            ) : (
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                {freelancers.map((freelancer) => (
+                  <FreelancerCard key={freelancer.id} freelancer={freelancer} />
+                ))}
+              </div>
+            )}
           </div>
         </div>
-      </div>
+      </main>
+
       <Footer />
     </div>
   );

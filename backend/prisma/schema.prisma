@@ -42,6 +42,7 @@ model User {
   resolvedDisputes    Dispute[]                 @relation("ResolvedDisputes")
   auditActions        AuditLog[]                @relation("AuditActor")
   aiLogs              AiUsageLog[]              @relation("UserAiLogs")
+  recommendationFeedbacks RecommendationFeedback[] @relation("RecommendationActor")
 }
 
 model FreelancerProfile {
@@ -356,3 +357,28 @@ model Embedding {
 
   @@unique([entityType, entityId])
 }
+
+model RecommendationFeedback {
+  id                 String   @id @default(uuid())
+  actorId            String
+  actor              User     @relation("RecommendationActor", fields: [actorId], references: [id], onDelete: Cascade)
+  recommendationType String   // FREELANCER | PROJECT
+  targetId           String
+  action             String   // SHOWN | CLICKED | DISMISSED | APPLIED | HIRED
+  createdAt          DateTime @default(now())
+
+  @@index([actorId, action])
+  @@index([recommendationType, targetId])
+}
+
+model RecommendationWeight {
+  id               String   @id @default(uuid())
+  skillWeight      Float    @default(0.35)
+  semanticWeight   Float    @default(0.20)
+  reputationWeight Float    @default(0.15)
+  budgetWeight     Float    @default(0.15)
+  freshnessWeight  Float    @default(0.10)
+  coldStartWeight  Float    @default(0.05)
+  updatedAt        DateTime @updatedAt
+}
+
